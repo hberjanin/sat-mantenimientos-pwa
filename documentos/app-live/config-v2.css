@@ -1,0 +1,6 @@
+.config-v2-panel{margin-top:16px}
+.config-client-list{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.config-client-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.config-client-row>div:first-child{display:flex;flex-direction:column;gap:3px;min-width:0}
+.config-client-row span{color:var(--muted);font-size:13px;overflow-wrap:anywhere}
+@media(max-width:700px){.config-client-row{align-items:flex-start;flex-direction:column}.config-client-row .actions{width:100%}.config-client-row .button{flex:1}}

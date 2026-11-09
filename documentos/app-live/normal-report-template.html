@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Nota de intervención</title>
+  <style>
+    @page { size: A4 landscape; margin: 0; }
+    @font-face { font-family: ReportRoboto; src: url("../assets/Roboto-Regular.ttf") format("truetype"); font-weight: 400; }
+    @font-face { font-family: ReportRoboto; src: url("../assets/Roboto-Bold.ttf") format("truetype"); font-weight: 700; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 297mm; height: 210mm; background: #fff; }
+    body { color: #202020; font-family: ReportRoboto, Arial, sans-serif; font-size: 6.4pt; }
+    .page {
+      width: 297mm;
+      height: 210mm;
+      padding: 3.5mm 3mm 2.5mm;
+      display: grid;
+      grid-template-rows: 10mm 6.5mm 18.5mm 131mm 18.5mm 4mm;
+      gap: 3mm;
+      overflow: hidden;
+    }
+    .page > .header { display: flex; align-items: flex-start; justify-content: space-between; border-bottom: 0.7pt solid #f5a900; padding: 0 1mm 1.5mm; }
+    .logo { width: 63mm; height: auto; display: block; }
+    .symbol { width: 9mm; height: 9mm; object-fit: contain; }
+    .title { margin: 0; border-bottom: 0.7pt solid #f5a900; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 9.2pt; font-weight: 700; line-height: 6mm; text-transform: uppercase; }
+    .top { display: grid; grid-template-rows: 6mm 6mm 6.5mm; border: 0.55pt solid #929292; }
+    .top-row { display: grid; border-bottom: 0.55pt solid #929292; min-width: 0; }
+    .top-row:last-child { border-bottom: 0; }
+    .top-row.one { grid-template-columns: 34% 17% 17% 17% 15%; }
+    .top-row.two { grid-template-columns: 30% 45% 25%; }
+    .top-field { display: flex; align-items: center; gap: 1.4mm; min-width: 0; padding: 0 1mm; border-right: 0.55pt solid #929292; white-space: nowrap; }
+    .top-field:last-child { border-right: 0; }
+    .label { font-weight: 700; flex: 0 0 auto; }
+    .value-line { min-width: 0; flex: 1 1 auto; height: 4mm; border-bottom: 0; line-height: 4mm; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+    .checks { display: flex; align-items: center; gap: 7mm; padding: 0 1mm; white-space: nowrap; }
+    .check { display: inline-flex; align-items: center; gap: 1mm; }
+    .check-box { width: 3.3mm; height: 3.3mm; border: 0.55pt solid #777; display: inline-flex; align-items: center; justify-content: center; font-size: 6.2pt; line-height: 3mm; }
+    .body-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 3mm; min-height: 0; }
+    .left-column { display: grid; grid-template-rows: 40mm 1fr; gap: 3mm; min-height: 0; }
+    .right-column { display: grid; grid-template-rows: 42mm 1fr 31mm; gap: 3mm; min-height: 0; }
+    .panel { border: 0.6pt solid #929292; min-height: 0; overflow: hidden; }
+    .panel-title { height: 5.5mm; margin: 0; padding: 1.2mm 1.5mm 0; background: #e8e8e8; border-bottom: 0.8pt solid #f5a900; font-size: 7pt; font-weight: 700; text-transform: uppercase; line-height: 3.8mm; }
+    .large-text { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 10; height: calc(100% - 5.5mm); padding: 2mm; white-space: pre-wrap; overflow: hidden; overflow-wrap: anywhere; text-overflow: ellipsis; font-size: 7pt; line-height: 1.2; }
+    .parts-panel .panel-title { border-bottom: 0.8pt solid #f5a900; }
+    .parts-table { width: 100%; height: 36mm; table-layout: fixed; border-collapse: collapse; font-size: 7pt; }
+    .parts-table col.number { width: 5%; }
+    .parts-table col.part-number { width: 22%; }
+    .parts-table col.description { width: 49%; }
+    .parts-table col.serial-number { width: 24%; }
+    .parts-table tr { height: 6mm; }
+    .parts-table th, .parts-table td { min-width: 0; height: 6mm; border-right: 0.55pt solid #929292; border-bottom: 0.55pt solid #929292; padding: 0 1mm; overflow: hidden; vertical-align: middle; text-align: left; white-space: nowrap; text-overflow: ellipsis; line-height: 3.8mm; }
+    .parts-table thead tr,
+    .parts-table tbody tr:not(:last-child) { border-bottom: 0.55pt solid #929292; }
+    .parts-table tr:last-child th, .parts-table tr:last-child td { border-bottom: 0; }
+    .parts-table th:last-child, .parts-table td:last-child { border-right: 0; }
+    .parts-table thead th { text-align: center; font-weight: 700; background: #fff; }
+    .parts-table tbody th { font-weight: 400; }
+    .notes .large-text { padding-top: 2mm; }
+    .data-grid { height: calc(100% - 5.5mm); display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(4, minmax(0, 1fr)); }
+    .data-cell, .data-spacer { position: relative; border-right: 0.55pt solid #929292; border-bottom: 0.55pt solid #929292; padding: 0 1.5mm; overflow: hidden; display: flex; align-items: center; gap: 1.5mm; }
+    .data-cell.technician { grid-column: 1 / -1; grid-row: 1; border-right: 0; }
+    .data-cell.notice { grid-column: 1; grid-row: 2; }
+    .data-spacer { grid-column: 2; grid-row: 2; border-right: 0; }
+    .data-cell.start { grid-column: 1; grid-row: 3; }
+    .data-cell.travel { grid-column: 2; grid-row: 3; border-right: 0; }
+    .data-cell.end { grid-column: 1; grid-row: 4; border-bottom: 0; }
+    .data-cell.total { grid-column: 2; grid-row: 4; border-right: 0; border-bottom: 0; }
+    .data-label { flex: 0 0 auto; font-weight: 700; white-space: nowrap; line-height: 3.5mm; }
+    .data-value-line { position: static; min-width: 0; flex: 1 1 auto; height: 3.5mm; border-bottom: 0; line-height: 3.5mm; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .signatures { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9mm; padding: 0 3mm; }
+    .signature { position: relative; text-align: center; min-width: 0; }
+    .signature-space { position: relative; height: 12mm; border-bottom: 0.7pt solid #777; }
+    .signature-space img { position: absolute; left: 8%; right: 8%; top: 0; width: 84%; height: 11mm; object-fit: contain; object-position: center bottom; }
+    .signature-space img:not([src]), .signature-space img[src=""] { display: none; }
+    .signature-caption { display: flex; align-items: center; justify-content: flex-start; gap: 1.5mm; min-width: 0; padding-top: 0.6mm; }
+    .signature-status { min-width: 0; overflow: hidden; font-size: 6.2pt; white-space: nowrap; text-overflow: ellipsis; }
+    .notes .large-text { -webkit-line-clamp: 12; }
+    .signature-role { flex: 0 0 auto; font-size: 7.2pt; font-weight: 700; line-height: 3.2mm; }
+    .footer { position: relative; color: #5c6166; text-align: center; font-size: 5.4pt; line-height: 4mm; white-space: nowrap; }
+    .footer-line { display: block; }
+    .footer-code { position: absolute; right: 0; color: #202020; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="header"><img class="logo" src="../assets/logo-horizontal-light.png" alt="Aplicaciones Tecnológicas"><img class="symbol" src="../assets/symbol-official.png" alt=""></header>
+    <h1 class="title"><span data-field="reportTitle">Nota de intervención</span></h1>
+    <div class="top">
+      <div class="top-row one">
+        <div class="top-field"><span class="label">Cliente:</span><span class="value-line" data-field="client"></span></div>
+        <div class="top-field"><span class="label">Ciudad:</span><span class="value-line" data-field="city"></span></div>
+        <div class="top-field"><span class="label">Provincia:</span><span class="value-line" data-field="province"></span></div>
+        <div class="top-field"><span class="label">País:</span><span class="value-line" data-field="country"></span></div>
+        <div class="top-field"><span class="label">Fecha:</span><span class="value-line" data-field="date"></span></div>
+      </div>
+      <div class="top-row two">
+        <div class="top-field"><span class="label">Marca:</span><span class="value-line" data-field="brand"></span></div>
+        <div class="top-field"><span class="label">Modelo:</span><span class="value-line" data-field="model"></span></div>
+        <div class="top-field"><span class="label">Número de serie:</span><span class="value-line" data-field="serial"></span></div>
+      </div>
+      <div class="checks"><span class="label">Tipo de intervención:</span><span class="check"><span class="check-box" data-check="instalacion"></span>Instalación</span><span class="check"><span class="check-box" data-check="mantenimiento"></span>Mantenimiento</span><span class="check"><span class="check-box" data-check="reparacion"></span>Reparación</span><span class="check"><span class="check-box" data-check="otros"></span>Otros:</span><span class="value-line" data-field="otherType"></span></div>
+    </div>
+    <div class="body-grid">
+      <div class="left-column">
+        <section class="panel"><h2 class="panel-title">Incidencia comunicada o detectada</h2><div class="large-text" data-field="incident"></div></section>
+        <section class="panel"><h2 class="panel-title">Trabajos realizados</h2><div class="large-text" data-field="work"></div></section>
+      </div>
+      <div class="right-column">
+        <section class="panel parts-panel">
+          <h2 class="panel-title">Piezas utilizadas</h2>
+          <table class="parts-table">
+            <colgroup><col class="number"><col class="part-number"><col class="description"><col class="serial-number"></colgroup>
+            <thead><tr><th scope="col">Nº</th><th scope="col">PN</th><th scope="col">Descripción</th><th scope="col">SN</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">1</th><td data-field="part1Pn"></td><td data-field="part1Ident"></td><td data-field="part1Sn"></td></tr>
+              <tr><th scope="row">2</th><td data-field="part2Pn"></td><td data-field="part2Ident"></td><td data-field="part2Sn"></td></tr>
+              <tr><th scope="row">3</th><td data-field="part3Pn"></td><td data-field="part3Ident"></td><td data-field="part3Sn"></td></tr>
+              <tr><th scope="row">4</th><td data-field="part4Pn"></td><td data-field="part4Ident"></td><td data-field="part4Sn"></td></tr>
+              <tr><th scope="row">5</th><td data-field="part5Pn"></td><td data-field="part5Ident"></td><td data-field="part5Sn"></td></tr>
+            </tbody>
+          </table>
+        </section>
+        <section class="panel notes"><h2 class="panel-title">Notas</h2><div class="large-text" data-field="notes"></div></section>
+        <section class="panel"><h2 class="panel-title">Datos de la intervención</h2><div class="data-grid"><div class="data-cell technician"><span class="data-label">Técnicos:</span><span class="data-value-line" data-field="technician"></span></div><div class="data-cell notice"><span class="data-label">Fecha y hora de aviso:</span><span class="data-value-line" data-field="notice"></span></div><div class="data-spacer" aria-hidden="true"></div><div class="data-cell start"><span class="data-label">Fecha y hora de inicio:</span><span class="data-value-line" data-field="start"></span></div><div class="data-cell travel"><span class="data-label">Desplazamiento:</span><span class="data-value-line" data-field="travel"></span></div><div class="data-cell end"><span class="data-label">Fecha y hora de fin:</span><span class="data-value-line" data-field="end"></span></div><div class="data-cell total"><span class="data-label">Total horas de trabajo:</span><span class="data-value-line" data-field="totalHours"></span></div></div></section>
+      </div>
+    </div>
+    <div class="signatures"><div class="signature"><div class="signature-space"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-signature="technician1" alt="Firma del técnico 1"></div><div class="signature-caption"><span class="signature-role">Técnico 1:</span><span class="signature-status" data-field="technician1Signer"></span></div></div><div class="signature"><div class="signature-space"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-signature="technician2" alt="Firma del técnico 2"></div><div class="signature-caption"><span class="signature-role">Técnico 2:</span><span class="signature-status" data-field="technician2Signer"></span></div></div><div class="signature"><div class="signature-space"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-signature="responsible" alt="Firma del responsable de la instalación"></div><div class="signature-caption"><span class="signature-role">Responsable:</span><span class="signature-status" data-field="responsibleSigner"></span></div></div></div>
+    <footer class="footer"><span class="footer-line" data-field="footerLine1"></span><span class="footer-line" data-field="footerLine2"></span><span class="footer-code">F0914(1)</span></footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Propuesta de informe de revisión</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+
+    :root {
+      --ink: #111111;
+      --muted-ink: #424242;
+      --blue: #315f98;
+      --orange: #f5a900;
+      --border: #1e1e1e;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-width: 210mm;
+      background: #e8eaed;
+    }
+
+    body {
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 11pt;
+      line-height: 1.35;
+    }
+
+    .report-page {
+      position: relative;
+      width: 210mm;
+      min-height: 297mm;
+      margin: 12mm auto;
+      padding: 15mm 17mm 25mm;
+      background: #ffffff;
+      box-shadow: 0 2mm 6mm rgb(0 0 0 / 14%);
+      overflow: hidden;
+    }
+
+    .report-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      min-height: 18mm;
+    }
+
+    .company-logo {
+      width: 83mm;
+      height: auto;
+      display: block;
+    }
+
+    .company-symbol {
+      width: 15mm;
+      height: 15mm;
+      object-fit: contain;
+    }
+
+    .report-title {
+      margin: 2mm 0 7mm;
+      text-align: center;
+      font-size: 18pt;
+      line-height: 1.1;
+      font-weight: 700;
+    }
+
+    .equipment-data {
+      border: 0.7pt solid var(--border);
+      padding: 0;
+    }
+
+    .equipment-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      min-height: 8.5mm;
+    }
+
+    .equipment-row + .equipment-row {
+      border-top: 0.7pt solid var(--border);
+    }
+
+    .equipment-cell {
+      display: flex;
+      align-items: center;
+      gap: 2.5mm;
+      min-width: 0;
+      padding: 1.2mm 2.5mm;
+    }
+
+    .equipment-cell:first-child {
+      border-right: 0.7pt solid var(--border);
+    }
+
+    .equipment-cell.empty {
+      visibility: visible;
+    }
+
+    .equipment-label {
+      font-size: 8pt;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .equipment-value {
+      min-width: 0;
+      color: var(--muted-ink);
+      font-size: 8pt;
+      overflow-wrap: anywhere;
+    }
+
+    .report-section {
+      margin-top: 8mm;
+      min-height: 31mm;
+    }
+
+    .source-content {
+      min-height: 31mm;
+      color: var(--ink);
+      font-size: 13pt;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .technician-block {
+      position: absolute;
+      right: 20mm;
+      bottom: 48mm;
+      width: 65mm;
+      color: #24476f;
+      font-size: 11pt;
+      font-weight: 700;
+      text-align: left;
+    }
+
+    .technician-name {
+      min-height: 8mm;
+    }
+
+    .signature-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 3mm;
+      margin-top: 7mm;
+      font-size: 9pt;
+    }
+
+    .signature-rule {
+      position: relative;
+      flex: 1 1 auto;
+      height: 10mm;
+      border-bottom: 0.7pt solid #24476f;
+    }
+
+    .signature-rule img {
+      position: absolute;
+      inset: 0 4mm 1mm;
+      width: calc(100% - 8mm);
+      height: 9mm;
+      object-fit: contain;
+      object-position: center bottom;
+    }
+
+    .signature-rule img:not([src]),
+    .signature-rule img[src=""] {
+      display: none;
+    }
+
+    .report-footer {
+      position: absolute;
+      right: 17mm;
+      bottom: 12mm;
+      left: 17mm;
+      color: #202020;
+      text-align: center;
+      font-size: 8pt;
+      line-height: 1.25;
+    }
+
+    .report-footer strong {
+      display: block;
+      margin-bottom: 1mm;
+      font-size: 10pt;
+    }
+
+    @media print {
+      html,
+      body {
+        min-width: 0;
+        background: #ffffff;
+      }
+
+      .report-page {
+        margin: 0;
+        box-shadow: none;
+      }
+    }
+
+    @media (max-width: 900px) {
+      html,
+      body {
+        min-width: 0;
+      }
+
+      .report-page {
+        width: min(100%, 210mm);
+        min-height: 0;
+        margin: 0 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="report-page" aria-labelledby="report-title">
+    <header class="report-header">
+      <img class="company-logo" src="../../assets/logo-horizontal-light.png" alt="Aplicaciones Tecnológicas Radiation Protection &amp; Medical">
+      <img class="company-symbol" src="../../assets/symbol-official.png" alt="">
+    </header>
+
+    <h1 id="report-title" class="report-title"><span data-field="reportTitle">INFORME DE REVISIÓN</span></h1>
+
+    <section class="equipment-data" aria-label="Datos del equipo">
+      <div class="equipment-row">
+        <div class="equipment-cell">
+          <div class="equipment-label">Cliente:</div>
+          <div class="equipment-value" data-field="client"></div>
+        </div>
+        <div class="equipment-cell">
+          <div class="equipment-label">Fecha de revisión:</div>
+          <div class="equipment-value" data-field="date"></div>
+        </div>
+      </div>
+      <div class="equipment-row">
+        <div class="equipment-cell">
+          <div class="equipment-label">Modelo:</div>
+          <div class="equipment-value" data-field="model"></div>
+        </div>
+        <div class="equipment-cell">
+          <div class="equipment-label">Marca:</div>
+          <div class="equipment-value" data-field="manufacturer"></div>
+        </div>
+      </div>
+      <div class="equipment-row">
+        <div class="equipment-cell empty" aria-hidden="true"></div>
+        <div class="equipment-cell">
+          <div class="equipment-label">Número de serie:</div>
+          <div class="equipment-value" data-field="serial"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="report-section" aria-label="Trabajos realizados">
+      <div class="source-content" data-field="workPerformed"></div>
+    </section>
+
+    <section class="report-section" aria-label="Notas">
+      <div class="source-content" data-field="notes"></div>
+    </section>
+
+    <div class="technician-block">
+      <div class="technician-name">Técnico: <span data-field="technician"></span></div>
+      <div class="signature-row">
+        <span>Firma:</span>
+        <span class="signature-rule"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-signature="technician" alt="Firma del técnico"></span>
+      </div>
+    </div>
+
+    <footer class="report-footer">
+      <strong>División de Protección Radiológica y Física Médica</strong>
+      <div>Tel: +34 913 52 54 54 · Fax: +34 913 52 46 85 · Web: www.atfisica.com · E-mail: atfisica@atfisica.com</div>
+    </footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,5 @@
+.visit-transfer-panel{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:16px 0}
+.visit-transfer-panel h2{margin:0 0 5px}
+.visit-transfer-panel p{margin:0}
+.visit-transfer-panel .actions{flex:0 0 auto}
+@media(max-width:700px){.visit-transfer-panel{align-items:stretch;flex-direction:column}.visit-transfer-panel .button{width:100%;text-align:center}}

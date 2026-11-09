@@ -1,0 +1,28 @@
+/* Author styles must not override the native hidden state. */
+[hidden],
+.field[hidden] {
+  display: none !important;
+}
+
+a.button,
+a.nav-item {
+  text-decoration: none;
+}
+
+.filterbar #q {
+  flex: 1 1 300px;
+  min-width: 260px;
+}
+
+.filterbar input[type="date"] {
+  flex: 0 1 170px;
+  min-width: 160px;
+}
+
+@media (max-width: 560px) {
+  .filterbar #q,
+  .filterbar input[type="date"] {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+}

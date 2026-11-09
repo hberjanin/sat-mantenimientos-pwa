@@ -1,0 +1,5 @@
+.asm-rules-selection{margin:16px 0 18px;padding:14px;background:#fffaf0;border:1px solid #efd38a;border-radius:6px}
+.asm-unavailable{opacity:.55}
+.asm-table tr.asm-unavailable th{color:#888}
+.asm-table input:disabled,.asm-rules-selection select:disabled{background:#eeeeee;color:#777;cursor:not-allowed}
+.asm-unavailable input{cursor:not-allowed}

@@ -1,0 +1,14 @@
+tools/
+tests/
+docs/
+backups/
+tmp/
+node_modules/
+*.pdf
+*.doc
+*.docx
+documentos/local-pdf-server.cjs
+documentos/app-live/mapa-campos-plantillas.html
+documentos/app-live/mapa-campos-plantillas.png
+documentos/app-live/informes/*-mapping.md
+documentos/app-live/informes/**/*-mapping.md

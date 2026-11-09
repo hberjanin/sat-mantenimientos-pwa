@@ -1,0 +1,26 @@
+{
+  "name": "Notas de intervención",
+  "short_name": "Intervenciones",
+  "description": "Gestión local y offline de notas de intervención e informes técnicos.",
+  "lang": "es",
+  "dir": "ltr",
+  "start_url": "./index.html?source=pwa#inicio",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f5f6",
+  "theme_color": "#f5a800",
+  "icons": [
+    {
+      "src": "../assets/icono-atfisica-A.png",
+      "sizes": "300x300",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icono-at-intervenciones-preview.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Icono AT Intervenciones</title>
+  <desc id="desc">Documento blanco sobre fondo grafito con una marca de verificacion ambar.</desc>
+  <rect width="512" height="512" rx="112" fill="#202020"/>
+  <rect x="108" y="72" width="296" height="368" rx="28" fill="#fff"/>
+  <path d="M332 72v88h72" fill="#f5a800"/>
+  <path d="M332 72l72 88h-72z" fill="#ffd36a"/>
+  <rect x="152" y="210" width="170" height="18" rx="9" fill="#d9d9d9"/>
+  <rect x="152" y="250" width="130" height="18" rx="9" fill="#d9d9d9"/>
+  <path d="M150 342l38 38 92-98" fill="none" stroke="#f5a800" stroke-linecap="round" stroke-linejoin="round" stroke-width="28"/>
+</svg>

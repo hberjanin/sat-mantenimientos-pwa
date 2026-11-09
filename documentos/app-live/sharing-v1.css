@@ -1,0 +1,5 @@
+.share-modal{width:min(680px,100%)}
+.share-summary{display:grid;grid-template-columns:minmax(130px,.35fr) minmax(0,1fr);gap:9px 14px;padding:14px 0}
+.share-summary b{font-size:12px;color:var(--muted);text-transform:uppercase}
+.share-summary span{overflow-wrap:anywhere}
+.share-error{color:var(--danger)}
