@@ -4,17 +4,17 @@ import {
   GENERAL_CHECKS,
   INTERVENTION_TYPES,
   STORAGE_KEY
-} from './core/domain/constants.js?v=1.0.46';
+} from './core/domain/constants.js?v=1.0.47';
 import {
   formatDate,
   formatDateTime,
   localDateValue,
   localDateTimeValue
-} from './core/domain/date-time.js?v=1.0.46';
-import { createStore } from './core/domain/store.js?v=1.0.46';
-import { createTransferPayload, validateTransferPayload } from './core/domain/transfer.js?v=1.0.46';
-import { applyClientOutcome } from './core/domain/signatures.js?v=1.0.46';
-import { APP_VERSION_LABEL } from './core/domain/version.js?v=1.0.46';
+} from './core/domain/date-time.js?v=1.0.47';
+import { createStore } from './core/domain/store.js?v=1.0.47';
+import { createTransferPayload, validateTransferPayload } from './core/domain/transfer.js?v=1.0.47';
+import { applyClientOutcome } from './core/domain/signatures.js?v=1.0.47';
+import { APP_VERSION_LABEL } from './core/domain/version.js?v=1.0.47';
 
 /**
  * Controlador principal de la SPA.
@@ -88,6 +88,9 @@ function showModal(content) {
   // inferiores en pantallas pequeñas.
   modal.querySelector('[data-close]')?.focus({ preventScroll: true });
 }
+
+// Los módulos pequeños de interfaz pueden reutilizar el diálogo accesible de la SPA.
+window.showAppModal = showModal;
 
 function confirmAction(title, message, confirmLabel = 'Confirmar') {
   return new Promise((resolve) => {
@@ -239,7 +242,7 @@ function storageStatusText() {
 
 function settings(data) {
   const catalog = (key, label, values) => `<div class="catalog-block catalog-${esc(key)}"><h3>${esc(label)}</h3><div class="actions"><input id="add-${esc(key)}" placeholder="Añadir"><button class="button small" data-add="${esc(key)}">Añadir</button></div><div class="mini-list">${values.map((value, index) => `<div><span title="${esc(value)}">${esc(value)}</span><button class="button small danger" data-remove="${esc(key)}" data-index="${index}" aria-label="Eliminar ${esc(value)}">Eliminar</button></div>`).join('') || '<span class="muted">Sin registros</span>'}</div></div>`;
-  return `${shell('Configuración')}<div class="two-col"><div><div class="panel"><h2>Perfil y firma</h2><div class="form-grid"><div class="field full"><label for="set-email">Correo del técnico</label><input id="set-email" type="email" value="${esc(data.technicianEmail)}"></div><div class="field full"><label for="set-report-city">Ciudad de firma en los informes</label><input id="set-report-city" autocomplete="address-level2" value="${esc(data.reportCity || 'Madrid')}" placeholder="Madrid"><span id="report-location-status" class="hint" role="status" aria-live="polite"></span></div></div><button class="button primary v2-space" data-save-settings>Guardar</button></div><div class="panel v2-space"><h2>Catálogos</h2>${catalog('client', 'Clientes', data.clients.map((client) => client.name))}${catalog('city', 'Ciudades', data.cities)}${catalog('brand', 'Marcas', data.brands)}${catalog('model', 'Modelos', data.models)}</div></div><div class="panel"><h2>Datos</h2><p class="hint" data-storage-status role="status">${esc(storageStatusText())}</p><p class="hint">Exporta una copia JSON para respaldo. La importación sustituye los datos locales.</p><div class="actions"><button class="button" data-export>Exportar copia</button><label class="button" for="import-data">Importar copia</label><input id="import-data" type="file" accept="application/json" hidden></div></div></div>`;
+  return `${shell('Configuración')}<div class="two-col"><div><div class="panel"><h2>Perfil y firma</h2><div class="form-grid"><div class="field full"><label for="set-email">Correo del técnico</label><input id="set-email" type="email" value="${esc(data.technicianEmail)}"></div><div class="field full"><label for="set-report-city">Ciudad de firma en los informes</label><input id="set-report-city" autocomplete="address-level2" value="${esc(data.reportCity || 'Madrid')}" placeholder="Madrid"><span id="report-location-status" class="hint" role="status" aria-live="polite"></span></div></div><button class="button primary v2-space" data-save-settings>Guardar</button></div><div class="panel v2-space"><h2>Catálogos</h2>${catalog('client', 'Clientes', data.clients.map((client) => client.name))}${catalog('city', 'Ciudades', data.cities)}${catalog('brand', 'Marcas', data.brands)}${catalog('model', 'Modelos', data.models)}</div></div><div class="panel"><h2>Datos</h2><p class="hint" data-storage-status role="status">${esc(storageStatusText())}</p><p class="hint">Exporta una copia JSON para respaldo. La importación sustituye los datos locales.</p><div class="actions"><button class="button" data-export>Exportar copia</button><label class="button" for="import-data">Importar copia</label><input id="import-data" type="file" accept="application/json" hidden></div><section class="pwa-management" aria-labelledby="pwa-management-title"><h3 id="pwa-management-title">Aplicación</h3><p class="hint" data-pwa-status role="status" aria-live="polite">Comprobando disponibilidad de instalación...</p><div class="actions"><button type="button" class="button" data-install-pwa>Instalar aplicación</button><button type="button" class="button danger" data-uninstall-pwa>Desinstalar aplicación</button></div></section></div></div>`;
 }
 
 function renderTrash(data) {
