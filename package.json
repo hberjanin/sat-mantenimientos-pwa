@@ -1,0 +1,16 @@
+{
+  "name": "sat-mantenimientos",
+  "private": true,
+  "version": "1.0.46",
+  "description": "Aplicacion local de notas de intervencion y visitas tecnicas",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/**/*.test.js",
+    "check:js": "node tools/check-javascript.mjs",
+    "check:version": "node tools/check-version.mjs",
+    "check:html": "powershell -ExecutionPolicy Bypass -File tools/validate-html5.ps1 documentos",
+    "check:storage": "node tools/run-storage-qa.mjs",
+    "check:pwa": "node tools/run-pwa-qa.mjs",
+    "check:offline-pdf": "node tools/run-offline-pdf-qa.mjs"
+  }
+}

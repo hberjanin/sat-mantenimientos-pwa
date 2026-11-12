@@ -1,5 +1,5 @@
-import { MAX_TRANSFER_BYTES, TRANSFER_FORMAT, TRANSFER_VERSION } from './constants.js?v=1.0.4';
-import { normalizeData } from './schema.js?v=1.0.4';
+import { MAX_TRANSFER_BYTES, TRANSFER_FORMAT, TRANSFER_VERSION } from './constants.js?v=1.0.46';
+import { normalizeData } from './schema.js?v=1.0.46';
 
 const TECHNICIAN_FIELDS = new Set([
   'technician', 'technicianName', 'technician1Name', 'technician1Signature',

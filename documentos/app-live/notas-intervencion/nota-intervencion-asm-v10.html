@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nota De Intervención ASM</title>
+  <style>
+    @page { size: A4 landscape; margin: 5mm; }
+    @font-face { font-family: MontserratAT; src: url("../../assets/Montserrat-Regular.ttf"); font-weight: 400; }
+    @font-face { font-family: MontserratAT; src: url("../../assets/Montserrat-Bold.ttf"); font-weight: 700; }
+    @font-face { font-family: RobotoAT; src: url("../../assets/Roboto-Regular.ttf"); font-weight: 400; }
+    @font-face { font-family: RobotoAT; src: url("../../assets/Roboto-Bold.ttf"); font-weight: 700; }
+
+    :root {
+      --ink: #1e1e1e;
+      --grid: #777777;
+      --soft: #f4f4f4;
+      --soft-2: #e8e8e8;
+      --accent: #f5a900;
+      --muted: #5c6166;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: white; font: 8.1pt/1.1 RobotoAT, Arial, sans-serif; }
+    .page { height: 200mm; overflow: hidden; position: relative; display: flex; flex-direction: column; justify-content: flex-start; gap: 0.6mm; padding: 2mm 1mm 20mm; break-after: page; page-break-after: always; }
+    .page:first-of-type header { margin-top: 2mm; }
+    .page footer { position: absolute; left: 0; right: 0; bottom: 0; margin: 0; }
+    .page:last-of-type { break-after: auto; page-break-after: auto; }
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      flex: 0 0 auto;
+      overflow: visible;
+      margin-bottom: 1.2mm;
+      background: white;
+      padding: 2mm 4mm;
+      border-bottom: 1.5pt solid var(--accent);
+    }
+    .logo { width: 66mm; height: auto; display: block; }
+    .corner-icon { width: 9mm; height: 9mm; display: block; object-fit: contain; }
+    h1 {
+      margin: 0 0 1mm;
+      padding: 1.05mm 3mm;
+      background: white;
+      color: var(--ink);
+      border-top: 0.8pt solid #a8adb1;
+      border-bottom: 1.2pt solid var(--grid);
+      font-family: MontserratAT, Arial, sans-serif;
+      font-size: 10.2pt;
+      font-weight: 700;
+      text-align: center;
+      text-transform: uppercase;
+    }
+    .page:first-of-type h1 { border-top: 0; border-bottom: 0; }
+    .panel { border: 1pt solid var(--grid); }
+    .panel-title {
+      padding: 0.8mm 1.5mm;
+      background: var(--soft-2);
+      border-bottom: 1pt solid var(--grid);
+      font: 700 7.4pt/1.1 MontserratAT, Arial, sans-serif;
+      text-transform: uppercase;
+    }
+    .grid { display: grid; }
+    .g-2 { grid-template-columns: 1fr 1fr; }
+    .g-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .g-4 { grid-template-columns: 1.5fr 0.65fr 1fr 1fr; }
+    .identity-line { display: grid; }
+    .identity-main { grid-template-columns: minmax(95mm, 1.8fr) 0.95fr 0.85fr 0.55fr 0.65fr; }
+    .identity-equipment { grid-template-columns: 1.55fr 0.65fr 0.75fr 0.8fr; }
+    .field {
+      min-height: 5.8mm;
+      padding: 0.8mm 1.3mm;
+      border-right: 1pt solid var(--grid);
+      border-bottom: 1pt solid var(--grid);
+      display: flex;
+      gap: 1.5mm;
+      align-items: baseline;
+    }
+    .g-4 .field:nth-child(4n), .g-3 .field:nth-child(3n), .g-2 .field:nth-child(2n) { border-right: 0; }
+    .g-4 .field:nth-last-child(-n+4), .g-3 .field:nth-last-child(-n+3), .g-2 .field:nth-last-child(-n+2) { border-bottom: 0; }
+    .identity-line .field:last-child { border-right: 0; }
+    .identity-equipment .field { border-bottom: 0; }
+    .label, label { font-weight: 700; white-space: nowrap; }
+    .fill { flex: 1; min-width: 12mm; border-bottom: 0.7pt solid #7c7c7c; height: 4.2mm; }
+    .checks { display: flex; flex-wrap: wrap; gap: 1.2mm 2.6mm; align-items: center; padding: 0.9mm 1.4mm; }
+    .check { display: inline-flex; align-items: center; gap: 1mm; white-space: nowrap; }
+    .form-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      border: 1pt solid var(--grid);
+    }
+    .form-table th,
+    .form-table td {
+      border: 1pt solid var(--grid);
+      padding: 0.75mm 1mm;
+      height: 5.2mm;
+      vertical-align: middle;
+      text-align: left;
+      background: white;
+      font: inherit;
+    }
+    .form-table th {
+      font-weight: 700;
+      width: 18mm;
+      white-space: nowrap;
+    }
+    .client-table col:nth-child(1) { width: 38%; }
+    .client-table col:nth-child(2) { width: 20%; }
+    .client-table col:nth-child(3) { width: 17%; }
+    .client-table col:nth-child(4) { width: 10%; }
+    .client-table col:nth-child(5) { width: 15%; }
+    .equipment-table col:nth-child(1) { width: 31.5%; }
+    .equipment-table col:nth-child(2) { width: 31.5%; }
+    .equipment-table col:nth-child(3) { width: 37%; }
+    .client-table tr,
+    .equipment-table tr { height: 6.72mm; }
+    .client-table td,
+    .equipment-table td {
+      height: 6.72mm;
+      box-sizing: border-box;
+      vertical-align: middle;
+      line-height: 1.1;
+    }
+    .equipment-table {
+      width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+      border-bottom: 1pt solid var(--grid);
+    }
+    .equipment-table td { border-bottom: 0; }
+    .equipment-table .model-cell {
+      white-space: nowrap;
+      text-align: left;
+      vertical-align: middle;
+    }
+    .equipment-table .model-cell > label,
+    .equipment-table .model-cell > .model-value {
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1.1;
+    }
+    .model-select {
+      width: min(112mm, calc(100% - 19mm));
+      height: 4.2mm;
+      margin-left: 1.2mm;
+      border: 0;
+      border-bottom: 0.7pt solid #7c7c7c;
+      background: white;
+      color: var(--ink);
+      font: inherit;
+      padding: 0 1mm;
+      vertical-align: baseline;
+    }
+    .model-value { display: inline-block; width: auto; min-width: 12mm; margin-left: 1.2mm; }
+    .signature-image { max-width: 100%; max-height: 8mm; object-fit: contain; }
+    .signature-image:not([src]), .signature-image[src=""] { display: none; }
+    .equipment-table .application-cell {
+      display: table-cell;
+      box-sizing: border-box;
+      padding: 0.75mm 1mm;
+      white-space: nowrap;
+    }
+    .equipment-table .application-cell > label {
+      display: inline-flex;
+      align-items: center;
+      vertical-align: middle;
+      margin: 0 1.2mm 0 0;
+      line-height: 1;
+    }
+    .equipment-table .check {
+      gap: 0.6mm;
+      margin-left: 0;
+    }
+    .model-scope {
+      padding: 0.25mm 1mm 0.5mm;
+      color: var(--muted);
+      font-size: 7pt;
+      font-style: italic;
+    }
+    input.box { width: 3.4mm; height: 3.4mm; flex: 0 0 auto; accent-color: var(--ink); display: inline-block; margin: 0; padding: 0; vertical-align: middle; cursor: pointer; }
+    .writebox {
+      min-height: 18mm;
+      padding: 1.2mm;
+      background-image: none;
+    }
+    .writebox.notes { min-height: 22mm; }
+    .page:first-of-type > .panel:first-of-type .writebox { min-height: 10mm; }
+    .page:first-of-type > .panel:nth-of-type(4) .writebox { min-height: 29mm; }
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    th, td { border: 1pt solid var(--grid); padding: 0.4mm 0.55mm; vertical-align: middle; }
+    th { background: var(--soft-2); font: 700 6.8pt MontserratAT, Arial, sans-serif; text-align: center; }
+    .detector-id th { height: 3.4mm; padding: 0.35mm 0.5mm; }
+    td { height: 4.15mm; }
+    .row-label-head {
+      width: 44mm;
+      background: var(--soft-2);
+    }
+    td.rowhead {
+      width: 44mm;
+      background: var(--soft);
+      font-weight: 400;
+      text-align: left;
+      white-space: nowrap;
+      font-size: 7.2pt;
+    }
+    .compact td { height: 4.15mm; }
+    .tensions-table th:first-child { width: 22mm; text-align: center; background: var(--soft-2); }
+    .tension-field { display: grid; grid-template-columns: 38mm minmax(0, 1fr); align-items: baseline; column-gap: 1.5mm; }
+    .tensions-table .fill { border-bottom: 0; height: auto; min-height: 0; }
+    .tensions-table td,
+    .functional-table td,
+    .sensors-line-table td { height: 4.5mm; min-height: 0; }
+    .functional-table th {
+      width: 34mm;
+      min-width: 34mm;
+      text-align: left;
+      background: var(--soft-2);
+    }
+    .tensions-table td,
+    .functional-table td {
+      white-space: nowrap;
+      font-size: 6.4pt;
+      height: 4.5mm;
+      vertical-align: middle;
+    }
+    .sensors-line-table td { white-space: nowrap; font-size: 7pt; vertical-align: middle; }
+    .tensions-table .tension-field label { font-weight: 400; }
+    .functional-table .inline-options {
+      float: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7mm;
+      margin-left: 0.8mm;
+      vertical-align: middle;
+    }
+    .sensors-line-table col:nth-child(1) { width: 18mm; }
+    .sensors-line-table col:nth-child(2),
+    .sensors-line-table col:nth-child(3) { width: calc((100% - 18mm) / 2); }
+    .sensors-line-table th { text-transform: uppercase; }
+    .sensors-line-table td { white-space: nowrap; font-size: 7pt; }
+    .panel-title,
+    .tensions-table th:first-child,
+    .functional-table th,
+    .sensors-line-table th {
+      background: var(--soft-2);
+      padding: 0.8mm 1.5mm;
+      font: 700 7.4pt/1.1 MontserratAT, Arial, sans-serif;
+      text-align: left;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    .sensor-content { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 3mm; }
+    .sensor-content strong { min-width: 13mm; }
+    .sensors-line-table .inline-options { float: none; gap: 0.7mm; }
+    .inline-options {
+      float: right;
+      display: inline-flex;
+      gap: 1.2mm;
+      align-items: center;
+    }
+    .bottom-grid { display: grid; grid-template-columns: 1.3fr 0.72fr 0.72fr 0.72fr; }
+    .signatures {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8mm;
+      min-height: 8mm;
+      margin: 0;
+      padding: 1mm 2mm;
+      text-align: center;
+      font: 700 8.5pt MontserratAT, Arial, sans-serif;
+      border-top: 0;
+      border-bottom: 0;
+    }
+    .page .signatures { position: absolute; left: 0; right: 0; bottom: 9mm; }
+    .signature-item { display: inline-flex; align-items: center; gap: 1.5mm; width: 38.4%; white-space: nowrap; }
+    .signature-fill { display: inline-block; flex: 1; border-bottom: 0.8pt solid #777; height: 4mm; }
+    footer {
+      position: relative;
+      margin-top: 1mm;
+      text-align: center;
+      color: var(--muted);
+      font-size: 6.4pt;
+    }
+    .footer-line { display: block; }
+    .code { position: absolute; right: 5mm; bottom: 5mm; color: var(--ink); }
+    .page footer { left: 1mm; right: 1mm; bottom: 1.5mm; }
+    .page > .panel, .page > .form-table, .page > table { margin-bottom: 0.35mm; }
+    .page > .panel { border-color: #666; }
+    .panel-title { letter-spacing: 0.02em; }
+    .model-cell .model-value,
+    .intervention-data-panel .fill { border-bottom: 0; }
+    .form-table td { color: #262626; }
+    .form-table td > label, .field > label { color: #252525; }
+    .rowhead { color: #303030; }
+    .form-table input, .form-table select { outline: none; }
+    .signatures > div { color: #252525; }
+    .page.second-page { page-break-before: always; break-before: page; }
+    .second-page .writebox.incidence { min-height: 10mm; }
+    .second-page .writebox.work { min-height: 32mm; }
+    .second-page .writebox.notes { min-height: 18mm; }
+    .second-page .second-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; align-items: stretch; }
+    .second-page .second-left, .second-page .second-right { display: grid; gap: 2mm; min-width: 0; }
+    .second-page .second-left { grid-template-rows: auto 1fr; }
+    .second-page .second-left .writebox { min-height: 40mm; }
+    .second-page .second-left .panel:nth-child(2) .writebox { min-height: 62mm; }
+    .second-page .second-right .writebox.notes { min-height: 55mm; }
+    .second-page { gap: 0.8mm; justify-content: flex-start; }
+    .second-page header { padding: 1.5mm 3mm; margin-bottom: 0.5mm; }
+    .second-page h1 { border-top: 0; border-bottom: 0.8pt solid var(--accent); padding: 0.9mm 2mm; margin-bottom: 0.5mm; }
+    .second-page .panel { border: 0.7pt solid #777; }
+    .second-page .panel-title { background: white; border-bottom: 1.5pt solid var(--accent); padding: 0.7mm 1.3mm; color: var(--ink); }
+    .second-page .form-table { border-color: #777; }
+    .second-page .form-table td, .second-page .form-table th { border-color: #999; }
+    .second-page .second-left .panel, .second-page .second-right .panel { border: 0.7pt solid #777; }
+    .second-page .second-right .intervention-data-panel { border: 0; }
+    .second-page .second-right .intervention-data-panel .panel-title { border-bottom: 0; background: transparent; }
+    .second-page .second-left .writebox, .second-page .second-right .writebox { background-image: none; }
+    .second-page .parts-table { border: 0.7pt solid #777; }
+    .second-page .parts-table th { font-size: 6.2pt; padding: 0.35mm 0.7mm; }
+    .second-page .parts-table th { background: var(--soft); border-color: #999; color: var(--ink); }
+    .second-page .parts-table td { border-color: #c4c4c4; height: 4.4mm; padding: 0.25mm 0.7mm; color: #555; }
+    .second-page .parts-table td:first-child { color: #777; font-size: 6.4pt; }
+    .second-page .parts-table th:first-child { width: 8mm; }
+    .second-page .parts-table th:nth-child(2) { width: 34%; }
+    .second-page .parts-table th:nth-child(3) { width: 40%; }
+    .second-page .parts-table th:nth-child(4) { width: 22%; }
+    .second-page .bottom-grid, .second-page .g-2 { background: white; }
+    .second-page .field { border-color: #999; min-height: 6.2mm; }
+    .second-page .intervention-data-panel .bottom-grid .field:first-child { min-height: 12.4mm; align-items: flex-start; }
+    .second-page .intervention-data-panel .bottom-grid .field:first-child .fill { min-height: 9mm; }
+    .second-page .intervention-data-panel .bottom-grid { grid-template-columns: 1fr 1fr; }
+    .second-page .intervention-data-panel .bottom-grid .field { min-width: 0; }
+    .second-page .intervention-data-panel .bottom-grid .field label { white-space: normal; line-height: 1.05; }
+    .second-page .intervention-data-panel .field { min-height: 9mm; align-items: flex-start; }
+    .second-page .intervention-data-panel .field .fill { min-height: 5.5mm; }
+    .second-page .intervention-data-panel .bottom-grid .field:first-child { min-height: 15mm; }
+    .second-page .intervention-data-panel .bottom-grid .field:first-child .fill { min-height: 11mm; }
+    .second-page .writebox.notes { min-height: 20mm; background-image: none; }
+    .second-page .signatures { padding-top: 3mm; }
+    .second-page footer { margin-top: 0.5mm; }
+    .parts-table th:first-child { width: 10mm; }
+    .parts-table th:nth-child(2) { width: 34%; }
+    .parts-table th:nth-child(3) { width: 39%; }
+    .parts-table th:nth-child(4) { width: 23%; }
+    .parts-table td { height: 5.2mm; }
+    .second-page .bottom-grid { grid-template-columns: 1.25fr 1fr 1fr 1fr; }
+    @media screen {
+      body { background: #d9dde1; padding: 18px; }
+      .page { width: 297mm; min-height: 210mm; margin: 0 auto; padding: 2mm 6mm 6mm; background: white; box-shadow: 0 8px 28px rgba(0,0,0,.18); }
+    }
+    @media print { body { margin: 0; } }
+  </style>
+</head>
+<body>
+<main class="page">
+    <header>
+      <img class="logo" src="../../assets/logo-horizontal-light.png" alt="Aplicaciones Tecnológicas | Radiation Protection &amp; Medical">
+      <img class="corner-icon" src="../../assets/symbol-official.png" alt="">
+    </header>
+
+      <h1>Nota De Intervención ASM</h1>
+
+    <table class="form-table client-table">
+      <colgroup><col><col><col><col><col></colgroup>
+      <tr>
+        <td><label>Cliente:</label><span class="fill" data-field="client"></span></td>
+        <td><label>Ciudad:</label><span class="fill" data-field="city"></span></td>
+        <td><label>Provincia:</label><span class="fill" data-field="province"></span></td>
+        <td><label>País:</label><span class="fill" data-field="country"></span></td>
+        <td><label>Fecha:</label><span class="fill" data-field="date"></span></td>
+      </tr>
+    </table>
+
+    <table class="form-table equipment-table">
+      <colgroup><col><col><col></colgroup>
+      <tr>
+        <td class="model-cell">
+          <label>Modelo:</label>
+          <span class="fill model-value" data-field="model"></span>
+        </td>
+        <td><label>Número de serie:</label><span class="fill" data-field="serial"></span></td>
+        <td class="application-cell">
+          <label>Aplicación:</label>
+          <label class="check"><input type="checkbox" class="box" data-check="application-0" aria-label="Camión">Camión</label>
+          <label class="check"><input type="checkbox" class="box" data-check="application-1" aria-label="Tren">Tren</label>
+          <label class="check"><input type="checkbox" class="box" data-check="application-2" aria-label="Cesta">Cesta</label>
+          <label class="check"><input type="checkbox" class="box" data-check="application-3" aria-label="Cinta">Cinta</label>
+          <label class="check"><input type="checkbox" class="box" data-check="application-4" aria-label="Otro">Otro</label>
+        </td>
+      </tr>
+    </table>
+    <div class="model-scope">Identificación de detectores: ASM-SE: 1 y 2 · ASM II y ASM III: 1, 2, 3, 4, 5, 6, 7 y 8 · Correspondencias: A / A1 / 1 · B / A2 / 3 · C / B1 / 2 · B2 / 4 · C1 / 5 · C2 / 6 · D1 / 7 · D2 / 8 · E1 · E2 · F1 · F2 · G1 · G2 · H1 · H2.</div>
+
+    <div class="panel">
+      <div class="checks">
+        <span class="label">Incidencia comunicada o detectada antes del mantenimiento:</span>
+        <label class="check"><input type="checkbox" class="box" data-check="asmIncidentYes" aria-label="Sí">Sí</label>
+        <label class="check"><input type="checkbox" class="box" data-check="asmIncidentNo" aria-label="No">No</label>
+      </div>
+      <div class="writebox" data-field="incident"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Parámetros</div>
+      <table class="compact">
+        <thead>
+          <tr class="detector-id">
+            <th class="row-label-head"></th><th>A / A1 / 1</th><th>B / A2 / 3</th><th>C / B1 / 2</th><th>B2 / 4</th><th>C1 / 5</th><th>C2 / 6</th><th>D1 / 7</th><th>D2 / 8</th>
+            <th>E1</th><th>E2</th><th>F1</th><th>F2</th><th>G1</th><th>G2</th><th>H1</th><th>H2</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-param-row="0"><td class="rowhead">Alta tensión</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td class="rowhead">Fondo</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td class="rowhead">Alarma &sigma; de nivel 1</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td class="rowhead">Alarma &sigma; de nivel 2</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td class="rowhead">Alarma &sigma; de nivel 3</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td class="rowhead">Alarma &sigma; por fondo</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td class="rowhead">Alarma por cuentas altas</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td class="rowhead">Alarma por cuentas bajas</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <table class="form-table tensions-table">
+      <tr>
+        <th>Tensiones</th>
+        <td><div class="tension-field"><label>Tensión 1 [V]:</label><span class="fill" data-field="voltage1"></span></div></td>
+        <td><div class="tension-field"><label>Tensión 2 [V]:</label><span class="fill" data-field="voltage2"></span></div></td>
+        <td><div class="tension-field"><label>Tensión 3 [V]:</label><span class="fill" data-field="voltage3"></span></div></td>
+        <td><div class="tension-field"><label>Tensión umbral [mV]:</label><span class="fill" data-field="threshold"></span></div></td>
+        <td><div class="tension-field"><label>Frecuencia de vigilancia [Hz]:</label><span class="fill" data-field="frequency"></span></div></td>
+      </tr>
+    </table>
+
+    <table class="form-table functional-table">
+      <tr>
+        <th>Comprobaciones</th>
+        <td>Local Line Driver <span class="inline-options"><input type="checkbox" class="box" data-check="asmCheck0Yes" aria-label="Sí">Sí <input type="checkbox" class="box" data-check="asmCheck0No" aria-label="No">No <input type="checkbox" class="box" data-check="asmCheck0NA" aria-label="No aplica">No aplica</span></td>
+        <td>Interface con el PC <span class="inline-options"><input type="checkbox" class="box" data-check="asmCheck1Yes" aria-label="Sí">Sí <input type="checkbox" class="box" data-check="asmCheck1No" aria-label="No">No <input type="checkbox" class="box" data-check="asmCheck1NA" aria-label="No aplica">No aplica</span></td>
+        <td>Conversor RS232-RS485 <span class="inline-options"><input type="checkbox" class="box" data-check="asmCheck2Yes" aria-label="Sí">Sí <input type="checkbox" class="box" data-check="asmCheck2No" aria-label="No">No <input type="checkbox" class="box" data-check="asmCheck2NA" aria-label="No aplica">No aplica</span></td>
+        <td>Sistema de impresión <span class="inline-options"><input type="checkbox" class="box" data-check="asmCheck3Yes" aria-label="Sí">Sí <input type="checkbox" class="box" data-check="asmCheck3No" aria-label="No">No <input type="checkbox" class="box" data-check="asmCheck3NA" aria-label="No aplica">No aplica</span></td>
+      </tr>
+    </table>
+
+    <table class="form-table sensors-line-table">
+      <colgroup><col><col><col></colgroup>
+      <tr>
+        <th>Sensores</th>
+        <td class="sensor-cell">
+          <span class="sensor-content"><strong>Sensor 1</strong><span class="inline-options">Presente <input type="checkbox" class="box" data-check="s1PresentYes" aria-label="Sí">Sí <input type="checkbox" class="box" data-check="s1PresentNo" aria-label="No">No · Funcionando <input type="checkbox" class="box" data-check="s1WorkingYes" aria-label="Sí">Sí <input type="checkbox" class="box" data-check="s1WorkingNo" aria-label="No">No</span></span>
+        </td>
+        <td class="sensor-cell">
+          <span class="sensor-content"><strong>Sensor 2</strong><span class="inline-options">Presente <input type="checkbox" class="box" data-check="s2PresentYes" aria-label="Sí">Sí <input type="checkbox" class="box" data-check="s2PresentNo" aria-label="No">No · Funcionando <input type="checkbox" class="box" data-check="s2WorkingYes" aria-label="Sí">Sí <input type="checkbox" class="box" data-check="s2WorkingNo" aria-label="No">No</span></span>
+        </td>
+      </tr>
+    </table>
+
+    <div class="panel">
+      <div class="panel-title">Notas</div>
+      <div class="writebox notes" data-field="notes"></div>
+    </div>
+
+    <div class="panel intervention-data-panel">
+      <div class="grid bottom-grid">
+        <div class="field"><label>Técnicos:</label><span class="fill" data-field="technician"></span></div>
+        <div class="field"><label>Hora de inicio:</label><span class="fill" data-field="startTime"></span></div>
+        <div class="field"><label>Hora de fin:</label><span class="fill" data-field="endTime"></span></div>
+        <div class="field" style="border-right:0;"><label>Desplazamiento:</label><span class="fill" data-field="travel"></span></div>
+      </div>
+    </div>
+
+    <div class="signatures">
+      <span class="signature-item">T&eacute;cnicos:<span class="signature-fill"><img class="signature-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-signature="technician" alt="Firma del técnico"></span></span>
+      <span class="signature-item">Visto Bueno:<span class="signature-fill"><img class="signature-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-signature="responsible" alt="Firma del cliente"></span></span>
+    </div>
+
+    <footer>
+      <span class="footer-line" data-field="footerLine1"></span><span class="footer-line" data-field="footerLine2"></span>
+      <span class="code">F0914(1)</span>
+    </footer>
+  </main>
+  <script>
+    // La vista directa usa la configuracion local; el generador de PDF vuelve a rellenar estos campos.
+    (() => {
+      const defaults = {
+        footerLine1: 'Divisi\u00f3n de Protecci\u00f3n Radiol\u00f3gica y F\u00edsica M\u00e9dica',
+        footerLine2: 'Tel: +34 913 52 54 54 \u00b7 Fax: +34 913 52 46 85 \u00b7 Web: www.atfisica.com \u00b7 E-mail: atfisica@atfisica.com'
+      };
+      let configured = {};
+      try { configured = JSON.parse(localStorage.getItem('notas-at-data-v1') || '{}'); } catch (_) { /* usa los valores por defecto */ }
+      for (const [name, fallback] of Object.entries(defaults)) {
+        const value = typeof configured[name] === 'string' && configured[name].trim() ? configured[name].trim() : fallback;
+        document.querySelectorAll(`[data-field="${name}"]`).forEach((element) => { element.textContent = value; });
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nota DE IntervencióN</title>
+  <style>
+    @page { size: A4 landscape; margin: 5mm; }
+    @font-face { font-family: MontserratAT; src: url("assets/Montserrat-Regular.ttf"); font-weight: 400; }
+    @font-face { font-family: MontserratAT; src: url("assets/Montserrat-Bold.ttf"); font-weight: 700; }
+    @font-face { font-family: RobotoAT; src: url("assets/Roboto-Regular.ttf"); font-weight: 400; }
+    @font-face { font-family: RobotoAT; src: url("assets/Roboto-Bold.ttf"); font-weight: 700; }
+
+    :root {
+      --ink: #1e1e1e;
+      --grid: #777777;
+      --soft: #f4f4f4;
+      --soft-2: #e8e8e8;
+      --accent: #f5a900;
+      --muted: #5c6166;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: white; font: 8.1pt/1.1 RobotoAT, Arial, sans-serif; }
+    .page { height: 200mm; overflow: hidden; position: relative; display: flex; flex-direction: column; justify-content: flex-start; gap: 0.6mm; padding: 2mm 1mm 20mm; break-after: page; page-break-after: always; }
+    .page:not(.second-page):first-of-type header { margin-top: 5mm; }
+    .page footer { position: absolute; left: 0; right: 0; bottom: 0; margin: 0; }
+    .page:last-of-type { break-after: auto; page-break-after: auto; }
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      flex: 0 0 auto;
+      overflow: visible;
+      margin-bottom: 1.2mm;
+      background: white;
+      padding: 2mm 4mm;
+      border-bottom: 0;
+    }
+    .logo { width: 66mm; height: auto; display: block; }
+    .corner-icon { width: 9mm; height: 9mm; display: block; object-fit: contain; }
+    h1 {
+      margin: 0 0 1mm;
+      padding: 1.05mm 3mm;
+      background: white;
+      color: var(--ink);
+      border-top: 0;
+      border-bottom: 0;
+      font-family: MontserratAT, Arial, sans-serif;
+      font-size: 10.2pt;
+      font-weight: 700;
+      text-align: center;
+      text-transform: uppercase;
+    }
+    .panel { border: 1pt solid var(--grid); }
+    .panel-title {
+      padding: 0.8mm 1.5mm;
+      background: var(--soft-2);
+      border-bottom: 1pt solid var(--grid);
+      font: 700 7.4pt/1.1 MontserratAT, Arial, sans-serif;
+      text-transform: uppercase;
+    }
+    .grid { display: grid; }
+    .g-2 { grid-template-columns: 1fr 1fr; }
+    .g-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .g-4 { grid-template-columns: 1.5fr 0.65fr 1fr 1fr; }
+    .identity-line { display: grid; }
+    .identity-main { grid-template-columns: minmax(95mm, 1.8fr) 0.95fr 0.85fr 0.55fr 0.65fr; }
+    .identity-equipment { grid-template-columns: 1.55fr 0.65fr 0.75fr 0.8fr; }
+    .field {
+      min-height: 5.8mm;
+      padding: 0.8mm 1.3mm;
+      border-right: 1pt solid var(--grid);
+      border-bottom: 1pt solid var(--grid);
+      display: flex;
+      gap: 1.5mm;
+      align-items: baseline;
+    }
+    .g-4 .field:nth-child(4n), .g-3 .field:nth-child(3n), .g-2 .field:nth-child(2n) { border-right: 0; }
+    .g-4 .field:nth-last-child(-n+4), .g-3 .field:nth-last-child(-n+3), .g-2 .field:nth-last-child(-n+2) { border-bottom: 0; }
+    .identity-line .field:last-child { border-right: 0; }
+    .identity-equipment .field { border-bottom: 0; }
+    .label, label { font-weight: 700; white-space: nowrap; }
+    .fill { flex: 1; min-width: 12mm; border-bottom: 0.7pt solid #7c7c7c; height: 4.2mm; }
+    .checks { display: flex; flex-wrap: wrap; gap: 1.2mm 2.6mm; align-items: center; padding: 0.9mm 1.4mm; }
+    .check { display: inline-flex; align-items: center; gap: 1mm; white-space: nowrap; }
+    .form-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      border: 1pt solid var(--grid);
+    }
+    .form-table th,
+    .form-table td {
+      border: 1pt solid var(--grid);
+      padding: 0.75mm 1mm;
+      height: 5.2mm;
+      vertical-align: middle;
+      text-align: left;
+      background: white;
+      font: inherit;
+    }
+    .form-table th {
+      font-weight: 700;
+      width: 18mm;
+      white-space: nowrap;
+    }
+    .client-table col:nth-child(1) { width: 38%; }
+    .client-table col:nth-child(2) { width: 20%; }
+    .client-table col:nth-child(3) { width: 17%; }
+    .client-table col:nth-child(4) { width: 10%; }
+    .client-table col:nth-child(5) { width: 15%; }
+    .equipment-table {
+      width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    }
+    .equipment-table col:nth-child(1) { width: 45%; }
+    .equipment-table col:nth-child(2) { width: 27.5%; }
+    .equipment-table col:nth-child(3) { width: 27.5%; }
+    .client-table tr,
+    .equipment-table tr { height: 6.72mm; }
+    .client-table td,
+    .equipment-table td {
+      height: 6.72mm;
+      box-sizing: border-box;
+      vertical-align: middle;
+      line-height: 1.1;
+    }
+    .equipment-table td {
+      text-align: left;
+    }
+    .model-cell {
+      white-space: nowrap;
+    }
+    .model-select {
+      width: min(112mm, calc(100% - 19mm));
+      height: 4.2mm;
+      margin-left: 1.2mm;
+      border: 0;
+      border-bottom: 0.7pt solid #7c7c7c;
+      background: white;
+      color: var(--ink);
+      font: inherit;
+      padding: 0 1mm;
+      vertical-align: baseline;
+    }
+    .signature-image { max-width: 100%; max-height: 8mm; object-fit: contain; }
+    .signature-image:not([src]), .signature-image[src=""] { display: none; }
+    .equipment-table .application-cell {
+      display: table-cell;
+      vertical-align: middle;
+      box-sizing: border-box;
+      padding: 0.8mm 1mm;
+      white-space: nowrap;
+    }
+    .equipment-table .application-cell > label { margin: 0; }
+    .equipment-table .application-cell [data-field="otherType"] { border-bottom: 0; }
+    .equipment-table .check {
+      gap: 0.6mm;
+      margin-left: 0;
+    }
+    .model-scope {
+      padding: 0.25mm 1mm 0.5mm;
+      color: var(--muted);
+      font-size: 7pt;
+      font-style: italic;
+    }
+    input.box { width: 3.4mm; height: 3.4mm; flex: 0 0 auto; accent-color: var(--ink); display: inline-block; margin: 0; padding: 0; vertical-align: middle; cursor: pointer; }
+    .writebox {
+      min-height: 18mm;
+      padding: 1.2mm;
+      background-image: none;
+    }
+    .writebox.notes { min-height: 22mm; }
+    .page:not(.second-page):first-of-type > .panel:first-of-type .writebox { min-height: 10mm; }
+    .page:not(.second-page):first-of-type > .panel:nth-of-type(4) .writebox { min-height: 29mm; }
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    th, td { border: 1pt solid var(--grid); padding: 0.4mm 0.55mm; vertical-align: middle; }
+    th { background: var(--soft-2); font: 700 6.8pt MontserratAT, Arial, sans-serif; text-align: center; }
+    .detector-id th { height: 3.4mm; padding: 0.35mm 0.5mm; }
+    td { height: 4.15mm; }
+    .row-label-head {
+      width: 44mm;
+      background: var(--soft-2);
+    }
+    td.rowhead {
+      width: 44mm;
+      background: var(--soft);
+      font-weight: 400;
+      text-align: left;
+      white-space: nowrap;
+      font-size: 7.2pt;
+    }
+    .compact td { height: 4.15mm; }
+    .tensions-table th:first-child { width: 22mm; text-align: center; background: var(--soft-2); }
+    .functional-table td,
+    .sensors-line-table td { height: 4.5mm; }
+    .functional-table th {
+      width: 29mm;
+      text-align: center;
+      background: var(--soft-2);
+    }
+    .functional-table td {
+      white-space: nowrap;
+      font-size: 6.4pt;
+    }
+    .sensors-line-table col:nth-child(1) { width: 18mm; }
+    .sensors-line-table col:nth-child(2),
+    .sensors-line-table col:nth-child(3) { width: calc((100% - 18mm) / 2); }
+    .sensors-line-table th { text-transform: uppercase; }
+    .sensors-line-table td { white-space: nowrap; font-size: 7pt; }
+    .sensor-content { display: flex; align-items: center; gap: 3mm; }
+    .sensor-content strong { min-width: 13mm; }
+    .sensors-line-table .inline-options { float: none; gap: 0.7mm; }
+    .inline-options {
+      float: right;
+      display: inline-flex;
+      gap: 1.2mm;
+      align-items: center;
+    }
+    .bottom-grid { display: grid; grid-template-columns: 1.3fr 0.72fr 0.72fr 0.72fr; }
+    .general-intervention-grid { grid-template-columns: 1fr 1fr; }
+    .intervention-data-panel { border: 1pt solid var(--grid); }
+    .intervention-data-table { margin: 0; border: 0; }
+    .intervention-data-table td { padding: 0; height: 5.2mm; }
+    .intervention-data-table .left-cell { vertical-align: middle; }
+    .intervention-data-table .left-stack { display: flex; height: 100%; min-height: 20.8mm; flex-direction: column; justify-content: space-between; }
+    .intervention-data-table .field { min-height: 5.2mm; padding: 0.75mm 1mm; border: 0; gap: 1.5mm; align-items: baseline; }
+    .intervention-data-table .left-stack .field + .field { border-top: 1pt solid var(--grid); }
+    .intervention-data-table .right-cell { padding: 0; }
+    .intervention-data-table .right-cell .field { border-bottom: 1pt solid var(--grid); }
+    .intervention-data-table .right-cell .field:last-child { border-bottom: 0; }
+    .intervention-data-table .field .fill { height: auto; min-height: 0; border-bottom: 0; }
+    .intervention-data-table .field label { white-space: nowrap; }
+    .signatures {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12mm;
+      min-height: 8mm;
+      margin: 0;
+      padding: 1mm 2mm;
+      text-align: center;
+      font: 700 8.5pt MontserratAT, Arial, sans-serif;
+      border-top: 0;
+      border-bottom: 0;
+    }
+    .page .signatures { position: absolute; left: 0; right: 0; bottom: 9mm; }
+    .signature-item { display: inline-flex; align-items: center; gap: 1.5mm; width: 38.4%; white-space: nowrap; }
+    .signature-fill { display: inline-block; flex: 1; border-bottom: 0.8pt solid #777; height: 4mm; }
+    footer {
+      position: relative;
+      margin-top: 1mm;
+      text-align: center;
+      color: var(--muted);
+      font-size: 6.4pt;
+    }
+    .footer-line { display: block; }
+    .code { position: absolute; right: 5mm; bottom: 5mm; color: var(--ink); }
+    .page footer { left: 1mm; right: 1mm; bottom: 1.5mm; }
+    .page > .panel, .page > .form-table, .page > table { margin-bottom: 0.35mm; }
+    .page > .panel { border-color: #666; }
+    .panel-title { letter-spacing: 0.02em; }
+    .form-table td { color: #262626; }
+    .form-table td > label, .field > label { color: #252525; }
+    .rowhead { color: #303030; }
+    .form-table input, .form-table select { outline: none; }
+    .signatures > div { color: #252525; }
+    .page.second-page { page-break-before: always; break-before: page; }
+    .second-page .writebox.incidence { min-height: 10mm; }
+    .second-page .writebox.work { min-height: 32mm; }
+    .second-page .writebox.notes { min-height: 18mm; }
+    .second-page .second-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; align-items: stretch; }
+    .second-page .second-left, .second-page .second-right { display: grid; gap: 2mm; min-width: 0; }
+    .second-page .second-left { grid-template-rows: auto 1fr; }
+    .second-page .second-left .writebox { min-height: 40mm; }
+    .second-page .second-left .panel:nth-child(2) .writebox { min-height: 62mm; }
+    .second-page .second-right .writebox.notes { min-height: 55mm; }
+    .second-page { gap: 0.8mm; justify-content: flex-start; }
+    .second-page header { padding: 1.5mm 3mm; margin-bottom: 0.5mm; }
+    .second-page h1 { border-top: 0; border-bottom: 0; padding: 0.9mm 2mm; margin-bottom: 0.5mm; }
+    .second-page .panel { border: 0.7pt solid #777; }
+    .second-page .intervention-data-panel { border: 0.7pt solid #777; }
+    .second-page .intervention-data-panel .panel-title { border-bottom: 0; padding-left: 0; }
+    .second-page .panel-title { background: white; border-bottom: 1.5pt solid var(--accent); padding: 0.7mm 1.3mm; color: var(--ink); }
+    .second-page .form-table { border-color: #777; }
+    .second-page .form-table td, .second-page .form-table th { border-color: #999; }
+    .second-page .second-left .panel, .second-page .second-right .panel { border: 0.7pt solid #777; }
+    .second-page .second-right .intervention-data-panel { border: 0.7pt solid #777; }
+    .second-page .second-right .intervention-data-panel .panel-title { background: white; border-bottom: 1.5pt solid var(--accent); padding: 0.7mm 1.3mm; color: var(--ink); }
+    .second-page .second-left .writebox, .second-page .second-right .writebox { background-image: none; }
+    .second-page .parts-table { border: 0.7pt solid #777; }
+    .second-page .parts-table th { font-size: 6.2pt; padding: 0.35mm 0.7mm; }
+    .second-page .parts-table th { background: var(--soft); border-color: #999; color: var(--ink); }
+    .second-page .parts-table td { border-color: #c4c4c4; height: 4.4mm; padding: 0.25mm 0.7mm; color: #555; }
+    .second-page .parts-table th:first-child,
+    .second-page .parts-table td:first-child { text-align: center; }
+    .second-page .parts-table td:first-child { color: #777; font-size: 6.4pt; }
+    .second-page .parts-table th:first-child { width: 8mm; }
+    .second-page .parts-table th:nth-child(2) { width: 34%; }
+    .second-page .parts-table th:nth-child(3) { width: 40%; }
+    .second-page .parts-table th:nth-child(4) { width: 22%; }
+    .second-page .bottom-grid, .second-page .g-2 { background: white; }
+    .second-page .field { border-color: #999; min-height: 6.2mm; }
+    .second-page .intervention-data-panel .bottom-grid .field:first-child { min-height: 12.4mm; align-items: flex-start; }
+    .second-page .intervention-data-panel .bottom-grid .field:first-child .fill { min-height: 9mm; }
+    .second-page .intervention-data-panel .bottom-grid { grid-template-columns: 1fr 1fr; }
+    .second-page .intervention-data-panel .bottom-grid .field { min-width: 0; }
+    .second-page .intervention-data-panel .bottom-grid .field label { white-space: normal; line-height: 1.05; }
+    .second-page .intervention-data-panel .field { min-height: 9mm; align-items: flex-start; }
+    .second-page .intervention-data-panel .field .fill { min-height: 5.5mm; }
+    .second-page .intervention-data-panel .bottom-grid .field:first-child { min-height: 15mm; }
+    .second-page .intervention-data-panel .bottom-grid .field:first-child .fill { min-height: 11mm; }
+    .second-page .writebox.notes { min-height: 20mm; background-image: none; }
+    .second-page .signatures { padding-top: 3mm; }
+    .second-page footer { margin-top: 0.5mm; }
+    .parts-table th:first-child { width: 10mm; }
+    .parts-table th:nth-child(2) { width: 34%; }
+    .parts-table th:nth-child(3) { width: 39%; }
+    .parts-table th:nth-child(4) { width: 23%; }
+    .parts-table td { height: 5.2mm; }
+    .second-page .bottom-grid { grid-template-columns: 1.25fr 1fr 1fr 1fr; }
+    @media screen {
+      body { background: #d9dde1; padding: 18px; }
+      .page { width: 297mm; min-height: 210mm; margin: 0 auto; padding: 2mm 6mm 6mm; background: white; box-shadow: 0 8px 28px rgba(0,0,0,.18); }
+    }
+    @media print { body { margin: 0; } }
+  </style>
+</head>
+<body>
+<main class="page second-page">
+    <header>
+      <img class="logo" src="assets/logo-horizontal-light.png" alt="Aplicaciones Tecnol&oacute;gicas | Radiation Protection &amp; Medical">
+      <img class="corner-icon" src="assets/symbol-official.png" alt="">
+    </header>
+      <h1>Nota DE IntervencióN</h1>
+
+    <table class="form-table client-table">
+      <colgroup><col><col><col><col><col></colgroup>
+      <tr>
+        <td><label>Cliente:</label><span class="fill" data-field="client"></span></td>
+        <td><label>Ciudad:</label><span class="fill" data-field="city"></span></td>
+        <td><label>Provincia:</label><span class="fill" data-field="province"></span></td>
+        <td><label>Pa&iacute;s:</label><span class="fill" data-field="country"></span></td>
+        <td><label>Fecha:</label><span class="fill" data-field="date"></span></td>
+      </tr>
+    </table>
+
+    <table class="form-table equipment-table">
+      <colgroup><col><col><col></colgroup>
+      <tr>
+        <td><label>Marca:</label><span class="fill" data-field="brand"></span></td>
+        <td><label>Modelo:</label><span class="fill" data-field="model"></span></td>
+        <td><label>N&uacute;mero de serie:</label><span class="fill" data-field="serial"></span></td>
+      </tr>
+      <tr>
+        <td colspan="3" class="application-cell"><label>Tipo de intervenci&oacute;n:</label>
+          <label class="check"><input type="checkbox" class="box" data-check="generalCheck0" aria-label="Instalación">Instalaci&oacute;n</label>
+          <label class="check"><input type="checkbox" class="box" data-check="generalCheck1" aria-label="Mantenimiento">Mantenimiento</label>
+          <label class="check"><input type="checkbox" class="box" data-check="generalCheck2" aria-label="Reparación">Reparaci&oacute;n</label>
+          <label class="check"><input type="checkbox" class="box" data-check="generalCheck3" aria-label="Otros">Otros: <span class="fill" data-field="otherType"></span></label>
+        </td>
+      </tr>
+    </table>
+
+    <div class="second-layout">
+      <div class="second-left">
+      <div class="panel">
+        <div class="panel-title">Incidencia comunicada o detectada</div>
+        <div class="writebox incidence" data-field="incident"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Trabajos realizados</div>
+        <div class="writebox work" data-field="work"></div>
+      </div>
+      </div>
+      <div class="second-right">
+
+    <div class="panel">
+      <div class="panel-title">Piezas utilizadas</div>
+      <table class="parts-table">
+        <thead><tr><th>N&ordm;</th><th>PN</th><th>Identificaci&oacute;n</th><th>SN</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td></td><td></td><td></td></tr><tr><td>2</td><td></td><td></td><td></td></tr>
+          <tr><td>3</td><td></td><td></td><td></td></tr><tr><td>4</td><td></td><td></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Notas</div>
+      <div class="writebox notes" data-field="notes"></div>
+    </div>
+
+    <div class="panel intervention-data-panel">
+      <div class="panel-title">Datos de la intervenci&oacute;n</div>
+      <table class="form-table intervention-data-table">
+        <colgroup><col><col></colgroup>
+        <tbody>
+          <tr>
+            <td class="left-cell" rowspan="4">
+              <div class="left-stack">
+                <div class="field"><label>T&eacute;cnicos:</label><span class="fill" data-field="technician"></span></div>
+                <div class="field"><label>Desplazamiento:</label><span class="fill" data-field="travel"></span></div>
+              </div>
+            </td>
+            <td class="right-cell"><div class="field"><label>Fecha y hora de aviso:</label><span class="fill" data-field="noticeTime"></span></div></td>
+          </tr>
+          <tr><td class="right-cell"><div class="field"><label>Fecha y hora de inicio:</label><span class="fill" data-field="startTime"></span></div></td></tr>
+          <tr><td class="right-cell"><div class="field"><label>Fecha y hora de fin:</label><span class="fill" data-field="endTime"></span></div></td></tr>
+          <tr><td class="right-cell"><div class="field"><label>Total horas de trabajo:</label><span class="fill" data-field="totalHours"></span></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+      </div>
+    </div>
+
+    <div class="signatures">
+      <span class="signature-item">T&eacute;cnicos:<span class="signature-fill"><img class="signature-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-signature="technician" alt="Firma del técnico"></span></span>
+      <span class="signature-item">Visto Bueno:<span class="signature-fill"><img class="signature-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-signature="responsible" alt="Firma del cliente"></span></span>
+    </div>
+    <footer>
+      <span class="footer-line" data-field="footerLine1"></span><span class="footer-line" data-field="footerLine2"></span>
+      <span class="code">F0914(1)</span>
+    </footer>
+  </main>
+  <script>
+    // La vista directa usa la configuracion local; el generador de PDF vuelve a rellenar estos campos.
+    (() => {
+      const defaults = {
+        footerLine1: 'Divisi\u00f3n de Protecci\u00f3n Radiol\u00f3gica y F\u00edsica M\u00e9dica',
+        footerLine2: 'Tel: +34 913 52 54 54 \u00b7 Fax: +34 913 52 46 85 \u00b7 Web: www.atfisica.com \u00b7 E-mail: atfisica@atfisica.com'
+      };
+      let configured = {};
+      try { configured = JSON.parse(localStorage.getItem('notas-at-data-v1') || '{}'); } catch (_) { /* usa los valores por defecto */ }
+      for (const [name, fallback] of Object.entries(defaults)) {
+        const value = typeof configured[name] === 'string' && configured[name].trim() ? configured[name].trim() : fallback;
+        document.querySelectorAll(`[data-field="${name}"]`).forEach((element) => { element.textContent = value; });
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -171,11 +171,15 @@
   // Los informes se rellenan sobre plantillas HTML y después se convierten a PDF
   // dentro del navegador para conservar el funcionamiento offline.
   async function buildGeneralReportHtml(note) {
-    const templateUrl = new URL('../app-live/normal-report-template.html?html-pdf=1&template=columns-pn-sn', location.href);
+    const templatePath = note.type === 'ASM / Mantenimiento'
+      ? './notas-intervencion/nota-intervencion-asm-v10.html'
+      : './notas-intervencion/nota-intervencion-general-v10.html';
+    const templateUrl = new URL(`${templatePath}?html-pdf=1`, location.href);
     const response = await fetch(templateUrl, { cache: 'no-store' });
     if (!response.ok) throw new Error(`No se pudo cargar la plantilla HTML (${response.status}).`);
     const html = (await response.text())
       .split('{{ASSET_BASE}}').join(location.origin)
+      .split('../../assets/').join(`${location.origin}/assets/`)
       .split('../assets/').join(`${location.origin}/assets/`);
     const report = new DOMParser().parseFromString(html, 'text/html');
     const data = readData();
@@ -185,8 +189,10 @@
       });
     };
     const setCheck = (name, active) => {
-      const element = report.querySelector(`[data-check="${name}"]`);
-      if (element) element.textContent = active ? 'X' : '';
+      report.querySelectorAll(`[data-check="${name}"]`).forEach((element) => {
+        if ('checked' in element) element.checked = Boolean(active);
+        else element.textContent = active ? 'X' : '';
+      });
     };
     const setSignature = (name, dataUrl) => {
       const image = report.querySelector(`[data-signature="${name}"]`);
@@ -204,8 +210,11 @@
     setField('brand', note.brand === 'Otra / no identificada' ? (note.brandOtherInfo || note.brand) : note.brand);
     setField('model', note.model);
     setField('serial', note.serial);
-    setField('incident', note.incident);
+    setField('incident', note.type === 'ASM / Mantenimiento'
+      ? (note.asmIncidentExplanation || (note.asmIncidentYes === 'on' ? 'Sí' : 'No'))
+      : note.incident);
     setField('work', note.work);
+    setField('workPerformed', note.work);
     setField('notes', note.notes);
     setField('otherType', note.otherType);
     setField('technician', technicianFor(note));
@@ -213,6 +222,9 @@
     setField('notice', formatDateTime(note, 'noticeTime'));
     setField('start', formatDateTime(note, 'startTime'));
     setField('end', formatDateTime(note, 'endTime'));
+    setField('noticeTime', formatDateTime(note, 'noticeTime'));
+    setField('startTime', formatDateTime(note, 'startTime'));
+    setField('endTime', formatDateTime(note, 'endTime'));
     setField('totalHours', note.totalHours);
     setField('travel', note.travel);
     const technicians = technicianEntries(note, data);
@@ -232,8 +244,37 @@
       setField(`part${row}Sn`, part.sn);
     });
     setSignature('technician1', technicians[0]?.signature || '');
+    setSignature('technician', technicians[0]?.signature || '');
     setSignature('technician2', technicians[1]?.signature || '');
     setSignature('responsible', note.clientSignature);
+
+    if (note.type === 'ASM / Mantenimiento') {
+      ['0', '1', '2', '3', '4'].forEach((index) => setCheck(`application-${index}`, hasIndexed(note, 'application', index)));
+      setCheck('asmIncidentYes', hasValue(note, 'asmIncidentYes'));
+      setCheck('asmIncidentNo', hasValue(note, 'asmIncidentNo'));
+      ['0', '1', '2', '3'].forEach((index) => {
+        setCheck(`asmCheck${index}Yes`, hasValue(note, `asmCheck${index}Yes`));
+        setCheck(`asmCheck${index}No`, hasValue(note, `asmCheck${index}No`));
+        setCheck(`asmCheck${index}NA`, hasValue(note, `asmCheck${index}NA`));
+      });
+      ['s1PresentYes', 's1PresentNo', 's1WorkingYes', 's1WorkingNo', 's2PresentYes', 's2PresentNo', 's2WorkingYes', 's2WorkingNo']
+        .forEach((key) => setCheck(key, hasValue(note, key)));
+      const parameterRows = report.querySelectorAll('.compact tbody tr');
+      parameterRows.forEach((row, rowIndex) => {
+        [...row.cells].slice(1).forEach((cell, columnIndex) => {
+          cell.textContent = note.params?.[`${rowIndex}_${columnIndex}`] || '';
+        });
+      });
+    } else {
+      ['0', '1', '2', '3'].forEach((index) => setCheck(`generalCheck${index}`, hasIndexed(note, 'generalCheck', index)));
+      const partRows = report.querySelectorAll('.parts-table tbody tr');
+      (note.parts || []).slice(0, partRows.length).forEach((part, index) => {
+        const cells = partRows[index].cells;
+        if (cells[1]) cells[1].textContent = part.pn || '';
+        if (cells[2]) cells[2].textContent = part.ident || '';
+        if (cells[3]) cells[3].textContent = part.sn || '';
+      });
+    }
     attachTemplateFitter(report);
     const output = `<!doctype html>\n${report.documentElement.outerHTML}`;
     return output;
@@ -467,14 +508,17 @@
       throw new Error('El generador PDF offline no está disponible. Recarga la aplicación.');
     }
 
+    const portrait = /@page\s*\{[^}]*size:\s*A4\s+portrait/i.test(html);
+    const canvasWidth = portrait ? 794 : 1123;
+    const canvasHeight = portrait ? 1123 : 794;
     const frame = document.createElement('iframe');
     frame.setAttribute('aria-hidden', 'true');
     Object.assign(frame.style, {
       position: 'fixed',
       left: '-100000px',
       top: '0',
-      width: '1123px',
-      height: '794px',
+      width: `${canvasWidth}px`,
+      height: `${canvasHeight}px`,
       border: '0',
       opacity: '0',
       pointerEvents: 'none'
@@ -508,10 +552,10 @@
             useCORS: true,
             backgroundColor: '#ffffff',
             logging: false,
-            width: 1123,
-            windowWidth: 1123
+            width: canvasWidth,
+            windowWidth: canvasWidth,
           },
-          jsPDF: { unit: 'pt', format: 'a4', orientation: 'landscape', compress: true },
+          jsPDF: { unit: 'pt', format: 'a4', orientation: portrait ? 'portrait' : 'landscape', compress: true },
           pagebreak: { mode: ['css', 'legacy'] }
         })
         .from(reportDocument.body)
@@ -531,8 +575,42 @@
     return renderHtmlToPdf(await buildAsmReportHtml(note), noteName(note));
   }
 
+  async function buildAdditionalReportHtml(note) {
+    const templateUrl = new URL('./propuestas/general-intervention-report.html?html-pdf=1', location.href);
+    const response = await fetch(templateUrl, { cache: 'no-store' });
+    if (!response.ok) throw new Error(`No se pudo cargar el informe adicional (${response.status}).`);
+    const html = (await response.text()).split('../../assets/').join(`${location.origin}/assets/`);
+    const report = new DOMParser().parseFromString(html, 'text/html');
+    const data = readData();
+    const setField = (name, value) => report.querySelectorAll(`[data-field="${name}"]`).forEach((element) => { element.textContent = clipFieldValue(name, value); });
+    const signature = report.querySelector('[data-signature="technician"]');
+    const technician = technicianEntries(note, data)[0];
+    if (signature && technician?.signature?.startsWith('data:image/')) signature.src = technician.signature;
+    else signature?.remove();
+    setField('reportTitle', note.reportTitle || 'INFORME DE REVISIÓN');
+    setField('client', note.client);
+    setField('date', formatDate(note.date));
+    setField('model', note.model || note.equipment);
+    setField('manufacturer', note.brand === 'Otra / no identificada' ? (note.brandOtherInfo || note.brand) : note.brand);
+    setField('serial', note.serial);
+    setField('workPerformed', note.work || '');
+    setField('notes', note.notes || '');
+    setField('technician', technician?.name || technicianFor(note));
+    setField('footerLine1', data.footerLine1 || DEFAULT_FOOTER_LINE_1);
+    setField('footerLine2', data.footerLine2 || DEFAULT_FOOTER_LINE_2);
+    attachTemplateFitter(report);
+    return `<!doctype html>\n${report.documentElement.outerHTML}`;
+  }
+
+  async function createHtmlAdditionalPdf(note) {
+    const name = cleanFileName(`Informe-${note.reportTitle || 'Revision'}-${note.client || 'Cliente'}-${note.model || note.equipment || 'Equipo'}-${note.date || 'sin-fecha'}`) + '.pdf';
+    return renderHtmlToPdf(await buildAdditionalReportHtml(note), name);
+  }
+
   async function createPdf(note) {
-    return note.type === 'ASM / Mantenimiento' ? createHtmlAsmPdf(note) : createHtmlGeneralPdf(note);
+    // El PDF principal es la nota de intervención. Los informes técnicos ASM
+    // siguen disponibles como plantillas independientes y no se mezclan aquí.
+    return createHtmlGeneralPdf(note);
   }
 
   function subjectFor(notes) {
@@ -577,21 +655,24 @@
     else localStorage.setItem(KEY, JSON.stringify(data));
   }
 
-  function reportSnapshotId(note) {
+  function reportSnapshotId(note, reportType = 'note') {
     const revision = note.reportFinalizedAt || note.updated || note.created || '';
-    return revision ? `report:${note.id}:${revision}` : '';
+    if (!revision) return '';
+    return reportType === 'additional'
+      ? `report:${note.id}:${revision}:additional`
+      : `report:${note.id}:${revision}`;
   }
 
-  async function archivedReportFile(note) {
+  async function archivedReportFile(note, reportType = 'note') {
     if (!completed(note) || !window.appStore?.getReportSnapshot) return null;
-    const id = reportSnapshotId(note);
+    const id = reportSnapshotId(note, reportType);
     if (!id) return null;
     const snapshot = await window.appStore.getReportSnapshot(id);
     if (!snapshot?.pdf) return null;
     return new File([snapshot.pdf], snapshot.fileName || noteName(note), { type: 'application/pdf' });
   }
 
-  async function archiveFinalReport(note, file, kind) {
+  async function archiveFinalReport(note, file, kind, reportType = 'note') {
     if (!completed(note) || !window.appStore?.saveReportSnapshot) return;
     const data = readData();
     const settings = {};
@@ -601,8 +682,9 @@
     const source = JSON.parse(JSON.stringify({ note, settings }));
     try {
       await window.appStore.saveReportSnapshot({
-        id: reportSnapshotId(note) || `report:${note.id}:${revision}`,
+        id: reportSnapshotId(note, reportType) || `report:${note.id}:${revision}${reportType === 'additional' ? ':additional' : ''}`,
         noteId: note.id,
+        reportType,
         reportFinalizedAt: note.reportFinalizedAt || '',
         generatedAt: new Date().toISOString(),
         kind,
@@ -620,7 +702,7 @@
     const cacheKey = [note.id, note.updated || note.created || '', note.status, note.reportFinalizedAt || ''].join(':');
     const cached = state.pdfCache.get(cacheKey);
     if (cached) return cached;
-    const archived = await archivedReportFile(note);
+    const archived = await archivedReportFile(note, 'note');
     if (archived) {
       state.pdfCache.set(cacheKey, archived);
       return archived;
@@ -635,6 +717,27 @@
     return file;
   }
 
+  async function createAdditionalPdfForNote(note, kind = 'preview') {
+    const cacheKey = `additional:${note.id}:${note.updated || note.created || ''}:${note.status}:${note.reportTitle || ''}`;
+    const cached = state.pdfCache.get(cacheKey);
+    if (cached) return cached;
+    const archived = await archivedReportFile(note, 'additional');
+    if (archived) {
+      state.pdfCache.set(cacheKey, archived);
+      return archived;
+    }
+    const file = await createHtmlAdditionalPdf(note);
+    state.pdfCache.set(cacheKey, file);
+    await archiveFinalReport(note, file, kind, 'additional');
+    return file;
+  }
+
+  async function createFilesForNote(note, kind) {
+    const files = [await createPdfForNote(note, kind)];
+    if (note.generateReport) files.push(await createAdditionalPdfForNote(note, kind));
+    return files;
+  }
+
   function downloadFile(file) {
     const url = URL.createObjectURL(file);
     const link = document.createElement('a');
@@ -645,6 +748,15 @@
     link.click();
     link.remove();
     window.setTimeout(() => URL.revokeObjectURL(url), 120000);
+  }
+
+  function showPreviewError(previewWindow, title, message) {
+    if (!previewWindow || previewWindow.closed) return;
+    previewWindow.document.title = title;
+    const paragraph = previewWindow.document.createElement('p');
+    paragraph.style.cssText = 'font-family:Arial,sans-serif;padding:24px;color:#8a1c1c';
+    paragraph.textContent = message;
+    previewWindow.document.body.replaceChildren(paragraph);
   }
 
   async function previewNote(id) {
@@ -661,13 +773,14 @@
     previewWindow.document.title = 'Generando informe PDF';
     previewWindow.document.body.innerHTML = '<p style="font-family:Arial,sans-serif;padding:24px">Generando el informe PDF…</p>';
     try {
-      const file = await createPdfForNote(note, completed(note) ? 'final-preview' : 'technician-preview');
+      const file = (await createFilesForNote(note, completed(note) ? 'final-preview' : 'technician-preview'))[0];
       const url = URL.createObjectURL(file);
       previewWindow.location.href = url;
       window.setTimeout(() => URL.revokeObjectURL(url), 120000);
     } catch (error) {
-      previewWindow.close();
-      toast(`No se pudo generar la vista previa: ${error.message || 'error desconocido'}`);
+      const message = `No se pudo generar la vista previa: ${error.message || 'error desconocido'}`;
+      showPreviewError(previewWindow, 'Error al generar el informe PDF', message);
+      toast(message);
     }
   }
 
@@ -679,8 +792,9 @@
     }
     toast('Generando PDF final…');
     try {
-      downloadFile(await createPdfForNote(note, 'final-download'));
-      toast('PDF descargado.');
+      const files = await createFilesForNote(note, 'final-download');
+      files.forEach(downloadFile);
+      toast(`${files.length} PDF${files.length === 1 ? '' : 's'} descargado${files.length === 1 ? '' : 's'}.`);
     } catch (error) {
       toast(`No se pudo descargar el PDF: ${error.message || 'error desconocido'}`);
     }
@@ -704,7 +818,7 @@
     state.subject = subject;
     showShareModal('Preparar envío', `<p class="muted">${notes.length === 1 ? 'Se enviará únicamente esta nota.' : `Se enviarán las ${notes.length} notas de esta visita en un único correo.`}</p><div class="share-summary"><b>Asunto</b><span>${escapeHtml(subject)}</span><b>Destinatario</b><span>${escapeHtml(notes[0].clientEmail || data.lastClientEmail || 'Se elegirá en el gestor de correo')}</span><b>Archivos</b><span data-share-file-count>Preparando PDF...</span></div><p data-share-status class="hint">Generando el documento finalizado...</p><div class="modal-actions"><button class="button" data-share-close>Cancelar</button><button class="button" data-download-share disabled>Descargar PDF</button><button class="button primary" data-native-share disabled>Abrir gestor de correo</button></div>`);
     try {
-      for (const note of notes) state.files.push(await createPdfForNote(note, 'final-share'));
+      for (const note of notes) state.files.push(...await createFilesForNote(note, 'final-share'));
       const count = document.querySelector('[data-share-file-count]');
       if (count) count.textContent = `${state.files.length} PDF${state.files.length === 1 ? '' : 's'} · ${formatBytes(state.files.reduce((total, file) => total + file.size, 0))}`;
       updateShareModal('Los PDF están preparados. Revisa el destinatario y pulsa <b>Abrir gestor de correo</b>.', true);
@@ -751,6 +865,7 @@
     button.type = 'button';
     button.className = `button small${primary ? ' primary' : ''}`;
     if (attribute === 'preview-note') button.dataset.previewNote = id;
+    if (attribute === 'preview-report') button.dataset.previewReport = id;
     if (attribute === 'download-note') button.dataset.downloadNote = id;
     if (attribute === 'share-note') button.dataset.shareNote = id;
     button.textContent = label;
@@ -760,6 +875,7 @@
   function addNoteReportButtons(actions, note) {
     if (!actions || !techniciansReady(note)) return;
     addReportButton(actions, 'preview-note', note.id, 'Ver PDF');
+    if (note.generateReport) addReportButton(actions, 'preview-report', note.id, 'Ver informe');
     if (completed(note)) {
       addReportButton(actions, 'download-note', note.id, 'Descargar PDF');
       addReportButton(actions, 'share-note', note.id, 'Enviar PDF', true);
@@ -826,6 +942,24 @@
   document.addEventListener('click', (event) => {
     const previewNoteButton = event.target.closest('[data-preview-note]');
     if (previewNoteButton) { event.preventDefault(); event.stopPropagation(); previewNote(previewNoteButton.dataset.previewNote); return; }
+    const previewReportButton = event.target.closest('[data-preview-report]');
+    if (previewReportButton) {
+      event.preventDefault(); event.stopPropagation();
+      const note = (readData().notes || []).find((item) => item.id === previewReportButton.dataset.previewReport);
+      if (!note || !techniciansReady(note)) { toast('Firma primero el informe con el técnico'); return; }
+      const previewWindow = window.open('', '_blank');
+      if (!previewWindow) { toast('El navegador bloqueó la vista previa. Permite ventanas emergentes para esta aplicación.'); return; }
+      previewWindow.document.title = 'Generando informe adicional';
+      previewWindow.document.body.innerHTML = '<p style="font-family:Arial,sans-serif;padding:24px">Generando el informe adicional…</p>';
+      createAdditionalPdfForNote(note, completed(note) ? 'final-report-preview' : 'technician-report-preview').then((file) => {
+        previewWindow.location.href = URL.createObjectURL(file);
+      }).catch((error) => {
+        const message = `No se pudo generar el informe adicional: ${error.message || 'error desconocido'}`;
+        showPreviewError(previewWindow, 'Error al generar el informe adicional', message);
+        toast(message);
+      });
+      return;
+    }
     const downloadNoteButton = event.target.closest('[data-download-note]');
     if (downloadNoteButton) { event.preventDefault(); event.stopPropagation(); downloadNotePdf(downloadNoteButton.dataset.downloadNote); return; }
     const shareNote = event.target.closest('[data-share-note]');

@@ -4,17 +4,17 @@ import {
   GENERAL_CHECKS,
   INTERVENTION_TYPES,
   STORAGE_KEY
-} from './core/domain/constants.js?v=1.0.4';
+} from './core/domain/constants.js?v=1.0.46';
 import {
   formatDate,
   formatDateTime,
   localDateValue,
   localDateTimeValue
-} from './core/domain/date-time.js?v=1.0.4';
-import { createStore } from './core/domain/store.js?v=1.0.4';
-import { createTransferPayload, validateTransferPayload } from './core/domain/transfer.js?v=1.0.4';
-import { applyClientOutcome } from './core/domain/signatures.js?v=1.0.4';
-import { APP_VERSION_LABEL } from './core/domain/version.js?v=1.0.4';
+} from './core/domain/date-time.js?v=1.0.46';
+import { createStore } from './core/domain/store.js?v=1.0.46';
+import { createTransferPayload, validateTransferPayload } from './core/domain/transfer.js?v=1.0.46';
+import { applyClientOutcome } from './core/domain/signatures.js?v=1.0.46';
+import { APP_VERSION_LABEL } from './core/domain/version.js?v=1.0.46';
 
 /**
  * Controlador principal de la SPA.

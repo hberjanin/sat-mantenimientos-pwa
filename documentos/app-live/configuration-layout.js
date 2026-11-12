@@ -8,7 +8,23 @@
     ['catalogos', 'Catálogos'],
     ['datos', 'Copias y datos']
   ];
-  let activeSection = 'perfil';
+  const ACTIVE_SECTION_KEY = 'sat-config-active-section';
+
+  function storedSection() {
+    try {
+      const saved = sessionStorage.getItem(ACTIVE_SECTION_KEY) || localStorage.getItem(ACTIVE_SECTION_KEY);
+      return SECTIONS.some(([id]) => id === saved) ? saved : 'perfil';
+    } catch (_) {
+      return 'perfil';
+    }
+  }
+
+  function rememberSection(id) {
+    try { sessionStorage.setItem(ACTIVE_SECTION_KEY, id); } catch (_) { /* almacenamiento de sesión no disponible */ }
+    try { localStorage.setItem(ACTIVE_SECTION_KEY, id); } catch (_) { /* almacenamiento local no disponible */ }
+  }
+
+  let activeSection = storedSection();
 
   function directPanel(column, index) {
     if (!column) return null;
@@ -17,6 +33,7 @@
 
   function activate(workspace, id) {
     activeSection = id;
+    rememberSection(id);
     workspace.querySelectorAll('[data-config-section]').forEach((section) => {
       const active = section.dataset.configSection === id;
       section.hidden = !active;
