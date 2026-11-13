@@ -7,8 +7,8 @@
  * La migración es automática y nunca borra la clave antigua.
  */
 
-import { EMPTY_DATA, STORAGE_CORRUPT_BACKUP_SUFFIX, STORAGE_KEY } from './constants.js?v=1.0.47';
-import { normalizeData, parseStoredData } from './schema.js?v=1.0.47';
+import { EMPTY_DATA, STORAGE_CORRUPT_BACKUP_SUFFIX, STORAGE_KEY } from './constants.js?v=1.0.49';
+import { normalizeData, parseStoredData } from './schema.js?v=1.0.49';
 
 const DATABASE_NAME = 'sat-mantenimientos-v2';
 const DATABASE_VERSION = 1;

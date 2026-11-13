@@ -7,7 +7,7 @@
  * desconocidas para no perder informacion futura.
  */
 
-import { EMPTY_DATA } from './constants.js?v=1.0.47';
+import { EMPTY_DATA } from './constants.js?v=1.0.49';
 
 const arrayOr = (value, fallback = []) => Array.isArray(value) ? value : [...fallback];
 const stringOrEmpty = (value) => value == null ? '' : String(value);
