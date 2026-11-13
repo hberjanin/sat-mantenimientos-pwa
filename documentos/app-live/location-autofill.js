@@ -49,7 +49,7 @@ async function suggestReportCity(input) {
   updateStatus('Obteniendo ubicación para sugerir la ciudad…');
   try {
     const [{ MUNICIPALITIES }, position] = await Promise.all([
-      import('./data/municipalities.js?v=1.0.50'),
+      import('./data/municipalities.js?v=1.0.51'),
       positionFromBrowser()
     ]);
     const { latitude, longitude } = position.coords;

@@ -2,7 +2,7 @@
   'use strict';
 
   const KEY = 'notas-at-data-v1';
-  const DEFAULT_BRANDS = ['Thermo Fisher Scientific'];
+  const DEFAULT_BRANDS = ['Thermo Fisher Scientific', 'LAP', 'Elekta'];
 
   function readData() {
     if (window.appStore?.read) return window.appStore.read();

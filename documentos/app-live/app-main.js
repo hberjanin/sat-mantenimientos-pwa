@@ -4,17 +4,17 @@ import {
   GENERAL_CHECKS,
   INTERVENTION_TYPES,
   STORAGE_KEY
-} from './core/domain/constants.js?v=1.0.50';
+} from './core/domain/constants.js?v=1.0.51';
 import {
   formatDate,
   formatDateTime,
   localDateValue,
   localDateTimeValue
-} from './core/domain/date-time.js?v=1.0.50';
-import { createStore } from './core/domain/store.js?v=1.0.50';
-import { createTransferPayload, validateTransferPayload } from './core/domain/transfer.js?v=1.0.50';
-import { applyClientOutcome } from './core/domain/signatures.js?v=1.0.50';
-import { APP_VERSION_LABEL } from './core/domain/version.js?v=1.0.50';
+} from './core/domain/date-time.js?v=1.0.51';
+import { createStore } from './core/domain/store.js?v=1.0.51';
+import { createTransferPayload, validateTransferPayload } from './core/domain/transfer.js?v=1.0.51';
+import { applyClientOutcome } from './core/domain/signatures.js?v=1.0.51';
+import { APP_VERSION_LABEL } from './core/domain/version.js?v=1.0.51';
 
 /**
  * Controlador principal de la SPA.
@@ -719,7 +719,7 @@ function handleImport(event) {
       const payload = JSON.parse(reader.result);
       if (!payload || typeof payload !== 'object' || Array.isArray(payload)) throw new Error('El archivo no contiene una copia válida');
       const source = payload.format === 'sat-backup' && payload.data && typeof payload.data === 'object' ? payload.data : payload;
-      const recognizedKeys = ['notes', 'visits', 'trash', 'visitTrash', 'templates', 'clients', 'cities', 'provinces', 'brands', 'models', 'modelCatalog'];
+      const recognizedKeys = ['notes', 'visits', 'trash', 'visitTrash', 'templates', 'clients', 'cities', 'provinces', 'brands', 'models', 'modelCatalog', 'catalogDefaultsVersion'];
       if (!recognizedKeys.some((key) => Object.prototype.hasOwnProperty.call(source, key))) throw new Error('El archivo no parece una copia de la aplicación');
       store.write(source);
       let importedReports = 0;

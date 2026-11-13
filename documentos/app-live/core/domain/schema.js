@@ -7,7 +7,12 @@
  * desconocidas para no perder informacion futura.
  */
 
-import { EMPTY_DATA } from './constants.js?v=1.0.50';
+import {
+  DEFAULT_BRANDS,
+  DEFAULT_CATALOG_VERSION,
+  DEFAULT_MODEL_CATALOG,
+  EMPTY_DATA
+} from './constants.js?v=1.0.51';
 
 const arrayOr = (value, fallback = []) => Array.isArray(value) ? value : [...fallback];
 const stringOrEmpty = (value) => value == null ? '' : String(value);
@@ -95,6 +100,7 @@ function normalizeVisit(visit, index) {
 export function normalizeData(input) {
   const source = input && typeof input === 'object' && !Array.isArray(input) ? input : {};
   const result = { ...EMPTY_DATA, ...source };
+  const catalogNeedsDefaults = Number(source.catalogDefaultsVersion || 0) < DEFAULT_CATALOG_VERSION;
 
   // `company` pertenecia a una version antigua y no participa en ningun flujo actual.
   delete result.company;
@@ -117,11 +123,10 @@ export function normalizeData(input) {
     generalChecks: arrayOr(item.generalChecks).map(String)
   }));
   result.clients = arrayOr(source.clients).map(normalizeClient).filter((client) => client.name);
-  result.cities = uniqueStrings(Array.isArray(source.cities) && source.cities.length ? source.cities : EMPTY_DATA.cities);
-  result.provinces = uniqueStrings(Array.isArray(source.provinces) && source.provinces.length ? source.provinces : EMPTY_DATA.provinces);
-  result.brands = uniqueStrings(uniqueStrings(source.brands).map(canonicalBrand));
-  result.models = uniqueStrings(source.models);
-  result.modelCatalog = arrayOr(source.modelCatalog).map((entry) => {
+  result.cities = uniqueStrings([...(catalogNeedsDefaults ? EMPTY_DATA.cities : []), ...arrayOr(source.cities)]);
+  result.provinces = uniqueStrings([...(catalogNeedsDefaults ? EMPTY_DATA.provinces : []), ...arrayOr(source.provinces)]);
+  result.brands = uniqueStrings([...(catalogNeedsDefaults ? DEFAULT_BRANDS : []), ...arrayOr(source.brands)].map(canonicalBrand));
+  result.modelCatalog = [...(catalogNeedsDefaults ? DEFAULT_MODEL_CATALOG : []), ...arrayOr(source.modelCatalog)].map((entry) => {
     if (!entry || typeof entry !== 'object' || Array.isArray(entry)) return entry;
     return {
       ...entry,
@@ -129,6 +134,12 @@ export function normalizeData(input) {
       brandName: canonicalBrand(entry.brandName)
     };
   });
+  result.models = uniqueStrings([
+    ...(catalogNeedsDefaults ? DEFAULT_MODEL_CATALOG.map((entry) => entry.name) : []),
+    ...arrayOr(source.models),
+    ...result.modelCatalog.map((entry) => typeof entry === 'object' ? entry.name || entry.model : '')
+  ]);
+  result.catalogDefaultsVersion = DEFAULT_CATALOG_VERSION;
 
   for (const key of ['technicianName', 'technicianEmail', 'technicianSignature', 'technician1Name', 'technician1Signature', 'technician2Name', 'technician2Signature', 'reportCity', 'footerLine1', 'footerLine2', 'lastClientSigner', 'lastClientEmail']) {
     result[key] = stringOrEmpty(result[key]);

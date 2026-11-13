@@ -1,7 +1,7 @@
 {
   "name": "sat-mantenimientos",
   "private": true,
-  "version": "1.0.50",
+  "version": "1.0.51",
   "description": "Aplicacion local de notas de intervencion y visitas tecnicas",
   "type": "module",
   "scripts": {
