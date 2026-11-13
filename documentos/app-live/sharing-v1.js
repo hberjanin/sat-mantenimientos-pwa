@@ -463,7 +463,7 @@
       setField(field, note[`${field}Text`] || note.notes || '');
     });
     setField('technician', technicianFor(note));
-    setField('reportCity', data.reportCity || 'Madrid');
+    setField('reportCity', data.reportCity || '');
     setConfiguredFooter();
     const dateParts = String(note.date || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
     setField('day', dateParts ? dateParts[3] : '');

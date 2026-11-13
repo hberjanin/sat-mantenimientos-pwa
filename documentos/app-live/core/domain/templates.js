@@ -1,4 +1,4 @@
-import { INTERVENTION_TYPES } from './constants.js?v=1.0.49';
+import { INTERVENTION_TYPES } from './constants.js?v=1.0.50';
 
 /** Devuelve solo los valores de plantilla que realmente corresponden a su tipo. */
 export function templateValues(template) {

@@ -71,7 +71,7 @@ export const EMPTY_DATA = Object.freeze({
   technician1Signature: '',
   technician2Name: '',
   technician2Signature: '',
-  reportCity: 'Madrid',
+  reportCity: '',
   footerLine1: DEFAULT_FOOTER_LINE_1,
   footerLine2: DEFAULT_FOOTER_LINE_2,
   lastClientSigner: '',
